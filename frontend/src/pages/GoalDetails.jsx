@@ -15,6 +15,8 @@ import ErrorMessage from '../components/ErrorMessage';
 import EmptyState from '../components/EmptyState';
 import RoadmapView from '../components/RoadmapView';
 import GenerateRoadmapModal from '../components/GenerateRoadmapModal';
+import SubtaskCompletionChart from '../components/SubtaskCompletionChart';
+import PhaseProgressChart from '../components/PhaseProgressChart';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -168,6 +170,14 @@ export default function GoalDetails() {
           </div>
         </div>
 
+        {/* Charts section - only show when roadmap is loaded */}
+        {roadmap && !roadmapLoading && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <SubtaskCompletionChart roadmap={roadmap} />
+            <PhaseProgressChart roadmap={roadmap} />
+          </div>
+        )}
+
       {/* Roadmap section */}
       <div className="mb-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -243,6 +253,7 @@ export default function GoalDetails() {
         loading={generating}
         error={genError}
       />
-    </div></div>
+      </div>
+    </div>
   );
 }

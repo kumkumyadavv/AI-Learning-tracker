@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import ProgressBar from '../components/ProgressBar';
 import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
+import GoalProgressChart from '../components/GoalProgressChart';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -100,7 +101,14 @@ export default function Dashboard() {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-12">
+          {/* Progress chart */}
+          <GoalProgressChart goals={goals} />
+
+          {/* Goals grid */}
+          <div>
+            <h2 className="text-2xl font-bold text-ink-900 mb-6">Your Goals</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {goals.map((goal) => (
             <Link
               key={goal.id}
@@ -143,6 +151,8 @@ export default function Dashboard() {
               </div>
             </Link>
           ))}
+            </div>
+          </div>
         </div>
       )}
       </div>
