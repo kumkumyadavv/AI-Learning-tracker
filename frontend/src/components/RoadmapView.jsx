@@ -26,28 +26,28 @@ function SubtaskItem({
   updating,
 }) {
   return (
-    <div className="group/sub relative pl-1">
+    <div className="group/sub flex items-start gap-4 p-4 bg-white rounded-xl border border-paper-100 hover:border-paper-200 transition-all hover:shadow-sm">
       {/* Checkbox */}
       <button
         type="button"
         onClick={() => onToggle(subtask)}
         disabled={updating}
-        className="absolute left-0 top-0.5 shrink-0 disabled:opacity-40 transition-transform hover:scale-110"
+        className="flex-shrink-0 mt-1 disabled:opacity-40 transition-all"
         aria-label={subtask.completed ? 'Mark as incomplete' : 'Mark as complete'}
       >
         {subtask.completed ? (
-          <div className="h-4 w-4 rounded-full bg-accent-600 flex items-center justify-center">
-            <Check className="h-2.5 w-2.5 text-paper-50" strokeWidth={3} />
+          <div className="h-5 w-5 rounded-full bg-success-500 flex items-center justify-center flex-shrink-0">
+            <Check className="h-3 w-3 text-white" strokeWidth={3} />
           </div>
         ) : (
-          <Circle className="h-4 w-4 text-ink-300 group-hover/sub:text-accent-500 transition-colors" />
+          <Circle className="h-5 w-5 text-ink-300 group-hover/sub:text-accent-500 transition-colors" />
         )}
       </button>
 
-      <div className="pl-7">
+      <div className="flex-1 min-w-0">
         <span
-          className={`text-sm leading-relaxed ${
-            subtask.completed ? 'text-ink-400 line-through decoration-ink-300' : 'text-ink-700'
+          className={`text-sm font-medium leading-relaxed block ${
+            subtask.completed ? 'text-ink-400 line-through decoration-ink-300' : 'text-ink-800'
           }`}
         >
           {subtask.title}
@@ -55,24 +55,22 @@ function SubtaskItem({
 
         {/* Resources — inline */}
         {subtask.resources.length > 0 && (
-          <div className="mt-1.5 space-y-0.5">
+          <div className="mt-3 space-y-2">
             {subtask.resources.map((r) => (
-              <div key={r.id} className="flex items-center gap-2 text-xs">
-                <span className="inline-flex items-center gap-1 text-ink-400">
+              <a
+                key={r.id}
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 p-2 bg-paper-50 rounded-lg hover:bg-paper-100 transition-colors group/res text-xs"
+              >
+                <span className="inline-flex items-center gap-1.5 text-ink-500 font-medium flex-shrink-0">
                   <ResourceIcon type={r.resource_type} />
-                  <span className="capitalize">{r.resource_type}</span>
+                  <span className="capitalize hidden sm:inline">{r.resource_type}</span>
                 </span>
-                <span className="text-ink-500">·</span>
-                <span className="text-ink-600 truncate">{r.title}</span>
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-0.5 text-accent-600 hover:text-accent-700 shrink-0 transition-colors"
-                >
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </div>
+                <span className="text-ink-600 truncate flex-1 group-hover/res:text-accent-600 transition-colors">{r.title}</span>
+                <ExternalLink className="h-3.5 w-3.5 text-ink-400 flex-shrink-0" />
+              </a>
             ))}
           </div>
         )}
@@ -99,71 +97,84 @@ export default function RoadmapView({
   }
 
   return (
-    <div className="relative">
-      {/* Vertical timeline line */}
-      <div className="absolute left-[7px] top-2 bottom-2 w-px bg-paper-200" />
+    <div className="space-y-5">
+      {sorted.map((phase, index) => {
+        const isOpen = expanded.has(phase.id);
+        const completed = phase.subtasks.filter((s) => s.completed).length;
+        const total = phase.subtasks.length;
+        const allDone = completed === total && total > 0;
+        const inProgress = completed > 0 && !allDone;
 
-      <div className="space-y-6">
-        {sorted.map((phase) => {
-          const isOpen = expanded.has(phase.id);
-          const completed = phase.subtasks.filter((s) => s.completed).length;
-          const total = phase.subtasks.length;
-          const allDone = completed === total && total > 0;
+        return (
+          <div
+            key={phase.id}
+            className="bg-white border border-paper-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
+          >
+            {/* Phase header card */}
+            <button
+              type="button"
+              onClick={() => toggle(phase.id)}
+              className="w-full text-left p-6 sm:p-8 hover:bg-paper-50 transition-colors"
+            >
+              <div className="flex items-start gap-4">
+                {/* Phase badge */}
+                <div
+                  className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center font-bold text-white text-lg ${
+                    allDone
+                      ? 'bg-success-500'
+                      : inProgress
+                      ? 'bg-accent-500'
+                      : 'bg-ink-400'
+                  }`}
+                >
+                  {allDone ? <Check className="h-6 w-6" strokeWidth={3} /> : index + 1}
+                </div>
 
-          return (
-            <div key={phase.id} className="relative pl-10">
-              {/* Phase number on the timeline */}
-              <div
-                className={`absolute left-0 top-0 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 transition-colors ${
-                  allDone
-                    ? 'border-accent-600 bg-accent-600'
-                    : completed > 0
-                    ? 'border-accent-600 bg-paper-50'
-                    : 'border-ink-300 bg-paper-50'
-                }`}
-              >
-                {allDone && <Check className="h-2 w-2 text-paper-50" strokeWidth={3} />}
+                {/* Phase info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-bold text-ink-900 leading-tight">
+                    {phase.phase_title}
+                  </h3>
+                  <div className="mt-2 flex items-center gap-3 text-sm">
+                    <div className="w-24 bg-paper-200 rounded-full h-2 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-500 ${
+                          allDone ? 'bg-success-500' : 'bg-accent-500'
+                        }`}
+                        style={{ width: `${total > 0 ? (completed / total) * 100 : 0}%` }}
+                      />
+                    </div>
+                    <span className="text-ink-600 font-medium whitespace-nowrap">
+                      {completed}/{total}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Chevron */}
+                <ChevronDown
+                  className={`h-5 w-5 text-ink-400 flex-shrink-0 transition-transform duration-300 ${
+                    isOpen ? 'rotate-180' : ''
+                  }`}
+                />
               </div>
+            </button>
 
-              {/* Phase header */}
-              <button
-                type="button"
-                onClick={() => toggle(phase.id)}
-                className="w-full text-left mb-2"
-              >
-                <div className="flex items-baseline gap-3">
-                  <span className="text-xs font-mono text-ink-400 tabular-nums">
-                    {String(phase.phase_order).padStart(2, '0')}
-                  </span>
-                  <h3 className="text-base font-serif text-ink-900">{phase.phase_title}</h3>
-                  {isOpen ? (
-                    <ChevronDown className="h-3.5 w-3.5 text-ink-300 ml-auto shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-3.5 w-3.5 text-ink-300 ml-auto shrink-0 -rotate-90 transition-transform" />
-                  )}
-                </div>
-                <p className="text-xs text-ink-400 mt-0.5 ml-7">
-                  {completed} of {total} complete
-                </p>
-              </button>
-
-              {/* Subtasks */}
-              {isOpen && (
-                <div className="ml-7 space-y-4 pt-1 pb-2">
-                  {phase.subtasks.map((subtask) => (
-                    <SubtaskItem
-                      key={subtask.id}
-                      subtask={subtask}
-                      onToggle={onToggleSubtask}
-                      updating={updatingSubtaskId === subtask.id}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+            {/* Subtasks expanded content */}
+            {isOpen && (
+              <div className="border-t border-paper-100 px-6 sm:px-8 py-6 space-y-4 bg-paper-50/50">
+                {phase.subtasks.map((subtask) => (
+                  <SubtaskItem
+                    key={subtask.id}
+                    subtask={subtask}
+                    onToggle={onToggleSubtask}
+                    updating={updatingSubtaskId === subtask.id}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

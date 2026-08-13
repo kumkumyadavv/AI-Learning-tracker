@@ -103,88 +103,109 @@ export default function GoalDetails() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-24">
-        <Loader2 className="h-6 w-6 animate-spin text-ink-300" />
+      <div className="min-h-screen bg-gradient-to-br from-paper-100 via-paper-50 to-paper-100 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative w-12 h-12">
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-accent-600 rounded-full animate-spin" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+          </div>
+          <p className="text-ink-500 font-medium">Loading goal details...</p>
+        </div>
       </div>
     );
   }
 
   if (error && !goal) {
     return (
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-        <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-400 hover:text-ink-700 mb-8 transition-colors uppercase tracking-wider-2">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to goals
-        </Link>
-        <ErrorMessage message={error} />
+      <div className="min-h-screen bg-gradient-to-br from-paper-100 via-paper-50 to-paper-100">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-600 hover:text-accent-700 mb-8 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to goals
+          </Link>
+          <ErrorMessage message={error} />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-      <Link
-        to="/dashboard"
-        className="inline-flex items-center gap-1.5 text-xs font-mono text-ink-400 hover:text-ink-700 mb-8 transition-colors uppercase tracking-wider-2"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Back to goals
-      </Link>
+    <div className="min-h-screen bg-gradient-to-br from-paper-100 via-paper-50 to-paper-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <Link
+          to="/dashboard"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-600 hover:text-accent-700 mb-8 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to goals
+        </Link>
 
-      {/* Goal header — editorial workspace */}
-      <div className="border-b border-paper-200 pb-8 mb-10">
-        <h1 className="text-2xl sm:text-3xl font-serif text-ink-900 leading-tight">{goal?.title}</h1>
-        <p className="mt-2 text-sm text-ink-500 leading-relaxed max-w-xl">
-          {goal?.description || 'No description'}
-        </p>
+        {/* Goal header — card */}
+        <div className="bg-white border border-paper-200 rounded-2xl p-8 mb-10 shadow-sm hover:shadow-md transition-shadow">
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold text-ink-900 leading-tight mb-3">{goal?.title}</h1>
+              <p className="text-base text-ink-600 leading-relaxed max-w-2xl">
+                {goal?.description || 'No description added yet'}
+              </p>
+            </div>
 
-        <div className="mt-5 flex items-center gap-2 text-xs text-ink-400">
-          <Calendar className="h-3.5 w-3.5" />
-          <span className="font-mono">Target: {formatDate(goal?.target_date || '')}</span>
-        </div>
+            <div className="flex items-center gap-3 text-sm text-ink-500 font-medium">
+              <Calendar className="h-5 w-5 text-accent-500" />
+              <span>Target deadline: <strong className="text-ink-700">{formatDate(goal?.target_date || '')}</strong></span>
+            </div>
 
-        {/* Progress */}
-        <div className="mt-6 max-w-md">
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-xs font-mono uppercase tracking-wider-2 text-ink-400">Progress</span>
-            <span className="text-2xl font-serif text-ink-900 tabular-nums">{goal?.progress ?? 0}%</span>
+            {/* Progress section */}
+            <div className="pt-4 border-t border-paper-100">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-semibold uppercase tracking-wider text-ink-700">Progress</span>
+                <span className="text-3xl font-bold text-accent-600">{goal?.progress ?? 0}%</span>
+              </div>
+              <ProgressBar value={goal?.progress ?? 0} size="lg" />
+            </div>
           </div>
-          <ProgressBar value={goal?.progress ?? 0} size="lg" />
         </div>
-      </div>
 
       {/* Roadmap section */}
-      <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <Map className="h-4 w-4 text-ink-400" />
-          <h2 className="text-sm font-mono uppercase tracking-wider-2 text-ink-500">Roadmap</h2>
-        </div>
-        <div className="flex items-center gap-3">
-          {roadmap && (
+      <div className="mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <div>
+            <h2 className="text-2xl font-bold text-ink-900">Your Learning Roadmap</h2>
+            <p className="mt-1 text-ink-600">Follow the phases below to master your goal</p>
+          </div>
+          <div className="flex items-center gap-3 flex-wrap">
+            {roadmap && (
+              <button
+                onClick={() => setModalOpen(true)}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-600 hover:text-accent-600 transition-colors"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Regenerate
+              </button>
+            )}
             <button
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-ink-500 hover:text-ink-900 transition-colors"
+              disabled={generating}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
-              Regenerate
+              <Sparkles className="h-4 w-4" />
+              {roadmap ? 'Regenerate Roadmap' : 'Generate Roadmap'}
             </button>
-          )}
-          <button
-            onClick={() => setModalOpen(true)}
-            disabled={generating}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-600 border-b border-accent-600 pb-0.5 hover:text-accent-700 hover:border-accent-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            {roadmap ? 'Regenerate Roadmap' : 'Generate Roadmap'}
-          </button>
+          </div>
         </div>
-      </div>
 
-      {roadmapError && <div className="mb-6"><ErrorMessage message={roadmapError} /></div>}
+        {roadmapError && <div className="mb-6"><ErrorMessage message={roadmapError} /></div>}
 
-      {roadmapLoading ? (
+        {roadmapLoading ? (
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-ink-300" />
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-accent-600 rounded-full animate-spin" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+            </div>
+            <p className="text-ink-500 font-medium">Loading roadmap...</p>
+          </div>
         </div>
       ) : roadmap ? (
         <RoadmapView
@@ -193,20 +214,24 @@ export default function GoalDetails() {
           updatingSubtaskId={updatingSubtaskId}
         />
       ) : (
-        <EmptyState
-          title="Build your learning path"
-          message="Tell us how you learn best, and we'll build a roadmap around your goal."
-          action={
-            <button
-              onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-600 border-b border-accent-600 pb-1 hover:text-accent-700 hover:border-accent-700 transition-colors"
-            >
-              <Sparkles className="h-4 w-4" />
-              Generate Roadmap
-            </button>
-          }
-        />
+        <div className="bg-white border border-paper-200 rounded-2xl p-12 text-center">
+          <Map className="h-12 w-12 text-accent-300 mx-auto mb-4" />
+          <EmptyState
+            title="Build your learning path"
+            message="Tell us how you learn best, and we'll build a personalized roadmap around your goal."
+            action={
+              <button
+                onClick={() => setModalOpen(true)}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-lg transition-colors"
+              >
+                <Sparkles className="h-4 w-4" />
+                Generate Roadmap
+              </button>
+            }
+          />
+        </div>
       )}
+      </div>
 
       <GenerateRoadmapModal
         open={modalOpen}
@@ -218,6 +243,6 @@ export default function GoalDetails() {
         loading={generating}
         error={genError}
       />
-    </div>
+    </div></div>
   );
 }

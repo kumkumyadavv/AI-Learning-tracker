@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Trash2, ArrowRight, Loader2 } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, Loader2, Calendar } from 'lucide-react';
 import { getGoals, deleteGoal } from '../services';
 import { ApiError } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -50,105 +50,103 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-      {/* Page header */}
-      <div className="mb-12">
-        <p className="text-xs font-mono uppercase tracking-wider-2 text-ink-400 mb-3">Dashboard</p>
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-serif text-ink-900 leading-tight">
-              {getGreeting()}, {user?.username}.
-            </h1>
-            <p className="mt-2 text-sm text-ink-500">Keep building momentum.</p>
+    <div className="min-h-screen bg-gradient-to-br from-paper-100 via-paper-50 to-paper-100">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        {/* Page header */}
+        <div className="mb-12">
+          <p className="text-xs font-mono uppercase tracking-widest text-accent-600 font-semibold mb-2">Learning Dashboard</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-ink-900 leading-tight">
+                {getGreeting()}, <span className="text-accent-600">{user?.username}</span>
+              </h1>
+              <p className="mt-3 text-base text-ink-600">Keep building momentum on your learning journey.</p>
+            </div>
+            <Link
+              to="/goals/new"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 shrink-0"
+            >
+              <Plus className="h-5 w-5" />
+              New Goal
+            </Link>
           </div>
-          <Link
-            to="/goals/new"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-ink-900 border-b border-ink-900 pb-1 hover:border-accent-600 hover:text-accent-600 transition-colors shrink-0"
-          >
-            <Plus className="h-4 w-4" />
-            New Goal
-          </Link>
         </div>
-      </div>
 
       {error && <div className="mb-8"><ErrorMessage message={error} /></div>}
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-6 w-6 animate-spin text-ink-300" />
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-accent-600 rounded-full animate-spin" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+            </div>
+            <p className="text-ink-500 font-medium">Loading your goals...</p>
+          </div>
         </div>
       ) : goals.length === 0 ? (
-        <EmptyState
-          title="No goals yet"
-          message="Create your first learning goal and generate a personalized roadmap to get started."
-          action={
-            <Link
-              to="/goals/new"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-600 border-b border-accent-600 pb-1 hover:text-accent-700 hover:border-accent-700 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              Create your first goal
-            </Link>
-          }
-        />
+        <div className="flex items-center justify-center py-20">
+          <EmptyState
+            title="No goals yet"
+            message="Create your first learning goal and generate a personalized roadmap to get started."
+            action={
+              <Link
+                to="/goals/new"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-lg transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Create your first goal
+              </Link>
+            }
+          />
+        </div>
       ) : (
-        <div className="border-t border-paper-200">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {goals.map((goal) => (
-            <div
+            <Link
               key={goal.id}
-              className="group border-b border-paper-200 py-7 transition-colors hover:bg-paper-100/50"
+              to={`/goals/${goal.id}`}
+              className="group bg-white border border-paper-200 rounded-2xl p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:border-accent-200 hover:scale-105 transform"
             >
-              <div className="flex items-start justify-between gap-6">
-                <Link to={`/goals/${goal.id}`} className="flex-1 min-w-0 block">
-                  <div className="flex items-baseline gap-3">
-                    <h3 className="text-lg font-serif text-ink-900 group-hover:text-accent-700 transition-colors">
-                      {goal.title}
-                    </h3>
-                  </div>
-                  <p className="mt-1 text-sm text-ink-500 line-clamp-1 max-w-lg">
-                    {goal.description || 'No description'}
+              <div className="space-y-5">
+                {/* Header */}
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-ink-900 group-hover:text-accent-600 transition-colors line-clamp-2">
+                    {goal.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-ink-600 line-clamp-2">
+                    {goal.description || 'No description added yet'}
                   </p>
+                </div>
 
-                  {/* Progress */}
-                  <div className="mt-4 max-w-md">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-mono text-ink-400">
-                        {goal.progress}% complete
-                      </span>
-                      <span className="text-xs text-ink-300 font-mono">
-                        {formatDate(goal.target_date)}
-                      </span>
-                    </div>
-                    <ProgressBar value={goal.progress} />
+                {/* Meta info */}
+                <div className="flex items-center gap-4 text-xs text-ink-500 font-medium">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-accent-500" />
+                    <span>{formatDate(goal.target_date)}</span>
                   </div>
-                </Link>
+                </div>
 
-                <div className="flex items-center gap-3 shrink-0 pt-1">
-                  <Link
-                    to={`/goals/${goal.id}`}
-                    className="text-ink-300 group-hover:text-accent-600 transition-colors"
-                    aria-label="Open goal"
-                  >
-                    <ArrowRight className="h-5 w-5" />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(goal.id)}
-                    disabled={deletingId === goal.id}
-                    className="text-ink-300 hover:text-red-500 disabled:opacity-50 transition-colors"
-                    aria-label="Delete goal"
-                  >
-                    {deletingId === goal.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </button>
+                {/* Progress */}
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-semibold text-ink-600">PROGRESS</span>
+                    <span className="text-sm font-bold text-accent-600">{goal.progress}%</span>
+                  </div>
+                  <ProgressBar value={goal.progress} />
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-2 border-t border-paper-100">
+                  <span className="text-xs text-ink-400">Click to view details</span>
+                  <ArrowRight className="h-4 w-4 text-accent-500 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
+

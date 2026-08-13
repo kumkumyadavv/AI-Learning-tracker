@@ -28,49 +28,47 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/60" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-lg bg-paper-50 border border-paper-200 max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg bg-white border border-paper-200 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-paper-200">
+        <div className="flex items-center justify-between px-6 sm:px-8 py-6 border-b border-paper-200 bg-gradient-to-r from-paper-50 to-white">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider-2 text-ink-400">Roadmap Generator</p>
-            <h2 className="text-lg font-serif text-ink-900 mt-1">Build your learning path</h2>
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-1">Setup Wizard</p>
+            <h2 className="text-2xl font-bold text-ink-900">Generate Your Roadmap</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-ink-300 hover:text-ink-600 transition-colors"
+            className="text-ink-400 hover:text-ink-600 transition-colors"
             aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-6 sm:px-8 py-6 space-y-8">
+        <form onSubmit={handleSubmit} className="px-6 sm:px-8 py-8 space-y-8">
           {/* Q1 — Skill level */}
           <div>
-            <p className="text-xs font-mono text-ink-400 mb-1">Question 01</p>
-            <label className="block text-sm font-medium text-ink-800 mb-4">
-              What&apos;s your current level?
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-3">Question 1</p>
+            <label className="block text-base font-semibold text-ink-900 mb-4">
+              What&apos;s your current skill level?
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-3">
               {skillLevels.map((s) => (
                 <button
                   key={s.value}
                   type="button"
                   onClick={() => setSkillLevel(s.value)}
-                  className={`text-left px-3 py-3 border transition-all ${
+                  className={`text-left px-4 py-3 rounded-lg border-2 font-medium transition-all transform hover:scale-105 ${
                     skillLevel === s.value
-                      ? 'border-accent-600 bg-accent-50'
-                      : 'border-paper-200 bg-transparent hover:border-ink-300'
+                      ? 'border-accent-600 bg-accent-50 text-accent-700'
+                      : 'border-paper-200 bg-white text-ink-800 hover:border-paper-300'
                   }`}
                 >
-                  <span className={`block text-sm font-semibold ${skillLevel === s.value ? 'text-accent-700' : 'text-ink-800'}`}>
-                    {s.label}
-                  </span>
-                  <span className="block text-xs text-ink-400 mt-0.5">{s.desc}</span>
+                  <span className="block text-sm font-bold">{s.label}</span>
+                  <span className="block text-xs text-ink-500 mt-0.5">{s.desc}</span>
                 </button>
               ))}
             </div>
@@ -78,13 +76,13 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
 
           {/* Q2 — Daily hours */}
           <div>
-            <p className="text-xs font-mono text-ink-400 mb-1">Question 02</p>
-            <label className="block text-sm font-medium text-ink-800 mb-4">
-              How much time can you give each day?
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-3">Question 2</p>
+            <label className="block text-base font-semibold text-ink-900 mb-6">
+              How much time can you dedicate daily?
             </label>
-            <div className="flex items-baseline gap-3 mb-3">
-              <span className="text-3xl font-serif text-accent-600 tabular-nums">{dailyHours}</span>
-              <span className="text-sm text-ink-500">hours per day</span>
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-5xl font-bold text-accent-600 tabular-nums">{dailyHours}</span>
+              <span className="text-lg text-ink-600 font-medium">hour{dailyHours !== 1 ? 's' : ''}/day</span>
             </div>
             <input
               id="dailyHours"
@@ -94,9 +92,9 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
               step={1}
               value={dailyHours}
               onChange={(e) => setDailyHours(Number(e.target.value))}
-              className="w-full"
+              className="w-full h-2 bg-paper-200 rounded-full appearance-none cursor-pointer accent-accent-600"
             />
-            <div className="flex justify-between text-xs font-mono text-ink-300 mt-1.5">
+            <div className="flex justify-between text-xs font-semibold text-ink-500 mt-3">
               <span>1h</span>
               <span>6h</span>
               <span>12h</span>
@@ -105,20 +103,20 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
 
           {/* Q3 — Learning style */}
           <div>
-            <p className="text-xs font-mono text-ink-400 mb-1">Question 03</p>
-            <label className="block text-sm font-medium text-ink-800 mb-4">
-              How do you prefer to learn?
+            <p className="text-xs font-semibold uppercase tracking-widest text-accent-600 mb-3">Question 3</p>
+            <label className="block text-base font-semibold text-ink-900 mb-4">
+              What's your preferred learning style?
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {learningStyles.map((s) => (
                 <button
                   key={s.value}
                   type="button"
                   onClick={() => setLearningStyle(s.value)}
-                  className={`px-3 py-2.5 text-sm font-medium border transition-all ${
+                  className={`px-4 py-3 rounded-lg border-2 font-medium text-sm transition-all transform hover:scale-105 ${
                     learningStyle === s.value
                       ? 'border-accent-600 bg-accent-50 text-accent-700'
-                      : 'border-paper-200 text-ink-600 hover:border-ink-300'
+                      : 'border-paper-200 bg-white text-ink-700 hover:border-paper-300'
                   }`}
                 >
                   {s.label}
@@ -130,20 +128,20 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
           {error && <ErrorMessage message={error} />}
 
           {/* Submit */}
-          <div className="flex items-center gap-3 pt-2 border-t border-paper-200">
+          <div className="flex items-center gap-3 pt-6 border-t border-paper-100">
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-ink-900 px-4 py-3 text-sm font-semibold text-paper-50 hover:bg-ink-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 disabled:from-ink-300 disabled:to-ink-300 px-4 py-3 text-base font-semibold text-white rounded-lg shadow-lg hover:shadow-xl disabled:shadow-none disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:scale-100"
             >
               {loading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Generating your roadmap…
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Generating…
                 </>
               ) : (
                 <>
-                  Generate my roadmap
+                  Generate Roadmap
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -152,7 +150,7 @@ export default function GenerateRoadmapModal({ open, onClose, onGenerate, loadin
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="text-sm font-medium text-ink-500 hover:text-ink-900 disabled:opacity-50 transition-colors px-4 py-3"
+              className="text-sm font-semibold text-ink-600 hover:text-ink-900 disabled:opacity-50 transition-colors px-4 py-3"
             >
               Cancel
             </button>
