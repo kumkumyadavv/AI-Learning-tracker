@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #FBFAF7;
+    color: #1C1B19;
+  }
+
+  input, textarea, select, button {
+    font-family: inherit;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Custom scrollbar — thin, editorial */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #DFDAD0;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #C4BFB8;
+  }
+
+  /* Focus ring */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid #2348C4;
+    outline-offset: 2px;
+  }
+
+  /* Range slider — minimal */
+  input[type='range'] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 3px;
+    background: #EDEAE2;
+    border-radius: 999px;
+  }
+  input[type='range']::-moz-range-track {
+    height: 3px;
+    background: #EDEAE2;
+    border-radius: 999px;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -7px;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #2348C4;
+    border: 2px solid #FBFAF7;
+    box-shadow: 0 0 0 1px #2348C4;
+  }
+  input[type='range']::-moz-range-thumb {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #2348C4;
+    border: 2px solid #FBFAF7;
+    box-shadow: 0 0 0 1px #2348C4;
+  }
+}

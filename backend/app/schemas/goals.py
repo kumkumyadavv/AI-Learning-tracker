@@ -5,6 +5,8 @@ from typing import Optional
 
 class GoalCreate(BaseModel):
     title: str
+    description: str | None = None
+    target_date: date | None = None
     
 class GoalResponse(BaseModel):
     id: int

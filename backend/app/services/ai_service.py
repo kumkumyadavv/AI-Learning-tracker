@@ -1,14 +1,21 @@
-import os,json
+import os
+import json
+
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
+
 
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("models/gemini-2.5-flash")
+
+client = genai.Client(
+    api_key=GEMINI_API_KEY
+)
+
 
 def generate_roadmap(goal, ai_input):
+
     prompt = f"""
 Generate a learning roadmap in STRICT JSON.
 
@@ -43,23 +50,48 @@ Format:
   ]
 }}
 """
-    response = model.generate_content(prompt)
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
     print(response.text)
-    clean_text = response.text.replace("```json", "").replace("```", "").strip()
+
+    clean_text = (
+        response.text
+        .replace("```json", "")
+        .replace("```", "")
+        .strip()
+    )
+
     roadmap_data = json.loads(clean_text)
+
     return roadmap_data
 
 
 class DummyGoal:
+
     title = "Learn DSA"
     description = "For product-based company interviews"
     target_date = "2026-12-31"
 
+
 class DummyInput:
+
     skill_level = "beginner"
     daily_hours = 2
     learning_style = "practice"
+
+
 if __name__ == "__main__":
+
     dummy_goal = DummyGoal()
     dummy_ai_input = DummyInput()
-    print(generate_roadmap(dummy_goal, dummy_ai_input))
+
+    print(
+        generate_roadmap(
+            dummy_goal,
+            dummy_ai_input
+        )
+    )
