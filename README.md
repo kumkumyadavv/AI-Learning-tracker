@@ -512,17 +512,6 @@ The current MVP is intentionally focused on the core learning workflow. Addition
 
 ---
 
-# 👩‍💻 Author
-
-**Kumkum Yadav**
-
-B.Tech Computer Science & Engineering
-
-GitHub:
-https://github.com/Kumkumy99
-
----
-
 ## ⭐ About
 
 AI-powered personal learning tracker built with **FastAPI, PostgreSQL, React, and Google Gemini**, designed to transform learning goals into personalized roadmaps and provide actionable progress tracking.
