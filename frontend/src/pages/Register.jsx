@@ -82,7 +82,7 @@ export default function Register() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-transparent border-0 border-b border-ink-200 px-0 py-2 text-sm text-ink-900 placeholder-ink-300 focus:border-accent-600 focus:ring-0 focus:outline-none transition-colors"
-                placeholder="Kumkum"
+                placeholder="Your Name"
                 autoComplete="username"
               />
             </div>
