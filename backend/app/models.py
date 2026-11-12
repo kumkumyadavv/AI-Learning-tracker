@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, DateT
 from .database import Base
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from sqlalchemy import Text
 
 
 class User(Base):
@@ -12,7 +13,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
     role = Column(String, default="user")
-
+    sessions = relationship("LearningSession")
     # One User → Many Goals
     goals = relationship("Goal", back_populates="owner")
 
@@ -34,6 +35,7 @@ class Goal(Base):
 
     # One Goal → Many Roadmap phases
     roadmaps = relationship("Roadmap", back_populates="goal")
+    sessions = relationship("LearningSession", back_populates="goal")
 
 
 class Roadmap(Base):
@@ -77,3 +79,20 @@ class Resource(Base):
 
     # Many Resources → One Subtask
     subtask = relationship("Subtask", back_populates="resources")
+
+class LearningSession(Base):
+    __tablename__ = "learning_sessions"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    goal_id = Column(Integer, ForeignKey("goals.id"), nullable=False)
+
+    started_at = Column(DateTime, default=datetime.utcnow)
+    ended_at = Column(DateTime, nullable=True)
+
+    duration_seconds = Column(Integer, default=0)
+    notes = Column(Text, nullable=True)
+
+    goal = relationship("Goal", back_populates="sessions")
+    user = relationship("User")
