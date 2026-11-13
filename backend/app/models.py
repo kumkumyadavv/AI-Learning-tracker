@@ -85,7 +85,8 @@ class LearningSession(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    subtask_id = Column(Integer, ForeignKey("subtasks.id"), nullable=False)
+    goal_id = Column(Integer, ForeignKey("goals.id"), nullable=False)
+    subtask_id = Column(Integer, ForeignKey("subtasks.id"), nullable=True)
 
     started_at = Column(DateTime, default=datetime.utcnow)
     ended_at = Column(DateTime, nullable=True)

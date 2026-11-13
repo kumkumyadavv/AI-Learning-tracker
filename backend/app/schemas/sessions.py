@@ -18,5 +18,6 @@ class SessionResponse(BaseModel):
     duration_seconds: int
     notes: Optional[str]
     subtask_id: Optional[int]
+
     class Config:
         from_attributes = True

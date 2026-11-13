@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from .database import get_db
+from fastapi.security import HTTPBearer
 from .models import User
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = HTTPBearer()
 SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -30,9 +31,11 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    credentials = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+    token = credentials.credentials
+
     try:
         payload = jwt.decode(
             token,

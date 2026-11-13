@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from app.models import LearningSession, Goal, User, Subtask, Roadmap
 from app.database import get_db
-from app.models import LearningSession, Goal, User
 from app.schemas.sessions import (
     SessionStart,
     SessionStop,
@@ -21,6 +20,10 @@ def start_session(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    db.query(User).filter(
+        User.id == current_user.id
+    ).with_for_update().first()
+
     goal = db.query(Goal).filter(
         Goal.id == data.goal_id,
         Goal.owner_id == current_user.id
@@ -41,7 +44,7 @@ def start_session(
             )
     active = db.query(LearningSession).filter(
         LearningSession.user_id == current_user.id,
-        LearningSession.ended_at == None
+        LearningSession.ended_at.is_(None)
     ).first()
 
     if active:
