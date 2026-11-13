@@ -13,7 +13,7 @@ class User(Base):
     email = Column(String, nullable=False, unique=True, index=True)
     hashed_password = Column(String, nullable=False)
     role = Column(String, default="user")
-    sessions = relationship("LearningSession")
+    sessions = relationship("LearningSession", back_populates="user")
     # One User → Many Goals
     goals = relationship("Goal", back_populates="owner")
 
@@ -35,7 +35,6 @@ class Goal(Base):
 
     # One Goal → Many Roadmap phases
     roadmaps = relationship("Roadmap", back_populates="goal")
-    sessions = relationship("LearningSession", back_populates="goal")
 
 
 class Roadmap(Base):
@@ -63,7 +62,7 @@ class Subtask(Base):
 
     # Many Subtasks → One Roadmap phase
     roadmap = relationship("Roadmap", back_populates="subtasks")
-
+    sessions = relationship("LearningSession", back_populates="subtask")
     # One Subtask → Many Resources
     resources = relationship("Resource", back_populates="subtask")
 
@@ -86,7 +85,7 @@ class LearningSession(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    goal_id = Column(Integer, ForeignKey("goals.id"), nullable=False)
+    subtask_id = Column(Integer, ForeignKey("subtasks.id"), nullable=False)
 
     started_at = Column(DateTime, default=datetime.utcnow)
     ended_at = Column(DateTime, nullable=True)
@@ -94,5 +93,5 @@ class LearningSession(Base):
     duration_seconds = Column(Integer, default=0)
     notes = Column(Text, nullable=True)
 
-    goal = relationship("Goal", back_populates="sessions")
-    user = relationship("User")
+    user = relationship("User", back_populates="sessions")
+    subtask = relationship("Subtask", back_populates="sessions")

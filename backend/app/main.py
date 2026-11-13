@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, get_db
 from .routers import goals,users,auth,ai
+from app.routers import sessions
 app = FastAPI()
+
+app.include_router(sessions.router)
 
 app.add_middleware(
     CORSMiddleware,
