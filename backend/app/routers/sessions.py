@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+from app.models import LearningSession, Goal, User, Subtask, Roadmap
 from app.database import get_db
 from app.models import LearningSession, Goal, User
 from app.schemas.sessions import (
@@ -28,7 +28,17 @@ def start_session(
 
     if not goal:
         raise HTTPException(status_code=404, detail="Goal not found")
+    if data.subtask_id is not None:
+        subtask = db.query(Subtask).join(Roadmap).filter(
+            Subtask.id == data.subtask_id,
+            Roadmap.goal_id == data.goal_id
+        ).first()
 
+        if not subtask:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid subtask for this goal"
+            )
     active = db.query(LearningSession).filter(
         LearningSession.user_id == current_user.id,
         LearningSession.ended_at == None
@@ -36,10 +46,11 @@ def start_session(
 
     if active:
         raise HTTPException(status_code=400, detail="A session is already active")
-
+    
     session = LearningSession(
         user_id=current_user.id,
         goal_id=data.goal_id,
+        subtask_id=data.subtask_id,
         started_at=datetime.utcnow()
     )
 
