@@ -8,6 +8,7 @@ import ProgressBar from '../components/ProgressBar';
 import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
 import GoalProgressChart from '../components/GoalProgressChart';
+import SessionTracker from '../components/SessionTracker';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -74,6 +75,8 @@ export default function Dashboard() {
         </div>
 
       {error && <div className="mb-8"><ErrorMessage message={error} /></div>}
+
+      {!loading && <SessionTracker goals={goals} />}
 
       {loading ? (
         <div className="flex items-center justify-center py-24">

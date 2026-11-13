@@ -47,3 +47,26 @@ export function getRoadmap(goalId) {
 export function updateSubtask(subtaskId, completed) {
   return request(`/ai/subtasks/${subtaskId}`, { method: 'PATCH', body: { completed } });
 }
+
+// Learning Sessions
+
+export function startSession(goalId, subtaskId = null) {
+  return request('/sessions/start', {
+    method: 'POST',
+    body: {
+      goal_id: goalId,
+      subtask_id: subtaskId,
+    },
+  });
+}
+
+export function stopSession(sessionId, notes = '') {
+  return request(`/sessions/${sessionId}/stop`, {
+    method: 'POST',
+    body: { notes: notes.trim() || null },
+  });
+}
+
+export function getSessions() {
+  return request('/sessions/');
+}
