@@ -7,7 +7,7 @@ function getNavigationState(pathname, hash) {
 
   return {
     overview: onDashboard && !hash,
-    goals: onDashboard && hash === '#my-goals',
+    goals: pathname === '/goals' || (onDashboard && hash === '#my-goals'),
     sessions: onDashboard && hash === '#learning-sessions',
   };
 }
@@ -60,9 +60,9 @@ export default function Sidebar({ isOpen, onClose }) {
         </Link>
         <Link
           className={getLinkClass(active.goals)}
-          to="/dashboard#my-goals"
+          to="/goals"
           onClick={onClose}
-          aria-current={active.goals ? 'location' : undefined}
+          aria-current={active.goals ? 'page' : undefined}
         >
           <Target size={17} aria-hidden="true" />
           <span>My Goals</span>

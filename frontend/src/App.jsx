@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
+import Goals from './pages/Goals';
 import CreateGoal from './pages/CreateGoal';
 import GoalDetails from './pages/GoalDetails';
 
@@ -28,6 +29,7 @@ export default function App() {
               }
             >
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/goals" element={<Goals />} />
               <Route path="/goals/new" element={<CreateGoal />} />
               <Route path="/goals/:goalId" element={<GoalDetails />} />
             </Route>
