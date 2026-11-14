@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, Compass } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -14,7 +15,8 @@ export default function Navbar() {
           <span className="text-sm font-semibold tracking-tight">Learning Tracker</span>
         </Link>
         {user && (
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <span className="text-xs text-ink-500 hidden sm:inline font-mono">{user.username}</span>
             <button
               onClick={() => {

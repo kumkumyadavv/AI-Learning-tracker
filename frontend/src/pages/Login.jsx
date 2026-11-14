@@ -4,6 +4,7 @@ import { Loader2, Compass, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { ApiError } from '../services/api';
 import ErrorMessage from '../components/ErrorMessage';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function Login() {
   const { login, user, loading: authLoading } = useAuth();
@@ -32,6 +33,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex bg-paper-50">
+      <div className="fixed right-4 top-4 z-40">
+        <ThemeToggle />
+      </div>
       {/* Left — editorial brand panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-ink-900 text-paper-50 relative overflow-hidden">
         <div className="flex items-center gap-2.5">
