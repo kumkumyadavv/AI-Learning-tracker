@@ -1,42 +1,137 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Plus, Trash2, ArrowRight, Loader2, Calendar } from 'lucide-react';
-import { getGoals, deleteGoal } from '../services';
+import { ArrowRight, Plus } from 'lucide-react';
+import {
+  getDailyAnalytics,
+  getGoalAnalytics,
+  getGoals,
+  getLearningCalendar,
+  getRoadmap,
+  getStreakAnalytics,
+} from '../services';
 import { ApiError } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import ProgressBar from '../components/ProgressBar';
-import EmptyState from '../components/EmptyState';
-import ErrorMessage from '../components/ErrorMessage';
-import GoalProgressChart from '../components/GoalProgressChart';
 import SessionTracker from '../components/SessionTracker';
+import './Dashboard.css';
 
-function formatDate(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+function getErrorMessage(error, fallback) {
+  return error instanceof ApiError ? error.detail : fallback;
+}
+
+function formatDuration(seconds) {
+  const totalMinutes = Math.floor(Math.max(0, Number(seconds) || 0) / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours ? `${hours}h ${String(minutes).padStart(2, '0')}m` : `${minutes}m`;
+}
+
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(`${dateString.slice(0, 10)}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function getTodayInIndia() {
+  const parts = new Intl.DateTimeFormat('en', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function buildActivityDays(calendar) {
+  const today = new Date(`${getTodayInIndia()}T00:00:00Z`);
+  const mondayOffset = (today.getUTCDay() + 6) % 7;
+  const currentWeekMonday = new Date(today);
+  currentWeekMonday.setUTCDate(today.getUTCDate() - mondayOffset);
+  const start = new Date(currentWeekMonday);
+  start.setUTCDate(currentWeekMonday.getUTCDate() - 84);
+
+  const activityByDate = new Map(
+    calendar.map((entry) => [entry.date, Number(entry.study_seconds) || 0])
+  );
+  const days = [];
+
+  for (const date = new Date(start); date <= today; date.setUTCDate(date.getUTCDate() + 1)) {
+    const dateKey = date.toISOString().slice(0, 10);
+    days.push({
+      date: dateKey,
+      seconds: activityByDate.get(dateKey) || 0,
+    });
+  }
+
+  return days;
+}
+
+function getActivityLevel(seconds) {
+  if (seconds <= 0) return 0;
+  if (seconds < 1800) return 1;
+  if (seconds < 3600) return 2;
+  if (seconds < 7200) return 3;
+  return 4;
 }
 
 function getGreeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 18) return 'Good afternoon';
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
   return 'Good evening';
 }
 
 export default function Dashboard() {
   const { user } = useAuth();
   const location = useLocation();
-  const [goals, setGoals] = useState([]);
+  const [data, setData] = useState({
+    goals: null,
+    goalAnalytics: null,
+    streaks: null,
+    daily: null,
+    calendar: null,
+  });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [deletingId, setDeletingId] = useState(null);
+  const [roadmap, setRoadmap] = useState(null);
+  const [roadmapError, setRoadmapError] = useState('');
+  const [roadmapLoading, setRoadmapLoading] = useState(false);
 
   useEffect(() => {
-    getGoals()
-      .then(setGoals)
-      .catch((err) => setError(err instanceof ApiError ? err.detail : 'Failed to load goals'))
-      .finally(() => setLoading(false));
+    let cancelled = false;
+
+    async function loadDashboard() {
+      const sources = [
+        ['goals', getGoals, 'Failed to load goals.'],
+        ['goalAnalytics', getGoalAnalytics, 'Failed to load goal analytics.'],
+        ['streaks', getStreakAnalytics, 'Failed to load streak data.'],
+        ['daily', getDailyAnalytics, "Failed to load today's learning data."],
+        ['calendar', getLearningCalendar, 'Failed to load learning activity.'],
+      ];
+      const results = await Promise.allSettled(sources.map(([, load]) => load()));
+      const loadedData = {};
+      const loadErrors = {};
+
+      results.forEach((result, index) => {
+        const [key, , fallback] = sources[index];
+        if (result.status === 'fulfilled') {
+          loadedData[key] = result.value;
+        } else {
+          loadErrors[key] = getErrorMessage(result.reason, fallback);
+        }
+      });
+
+      if (cancelled) return;
+      setData((currentData) => ({ ...currentData, ...loadedData }));
+      setErrors(loadErrors);
+      setLoading(false);
+    }
+
+    loadDashboard();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -45,128 +140,333 @@ export default function Dashboard() {
     document.getElementById(targetId)?.scrollIntoView({ block: 'start' });
   }, [loading, location.hash]);
 
-  async function handleDelete(goalId) {
-    if (!window.confirm('Delete this goal? This action cannot be undone.')) return;
-    setDeletingId(goalId);
-    try {
-      await deleteGoal(goalId);
-      setGoals((prev) => prev.filter((g) => g.id !== goalId));
-    } catch (err) {
-      setError(err instanceof ApiError ? err.detail : 'Failed to delete goal');
-    } finally {
-      setDeletingId(null);
+  const goals = data.goals || [];
+  const activeSession = data.daily?.active_session;
+  const continueGoal =
+    goals.find((goal) => goal.id === activeSession?.goal_id) ||
+    goals.find((goal) => goal.status === 'active' && Number(goal.progress) < 100) ||
+    goals.find((goal) => Number(goal.progress) < 100) ||
+    null;
+  const continueGoalId = continueGoal?.id ?? null;
+
+  useEffect(() => {
+    if (continueGoalId === null) {
+      setRoadmap(null);
+      setRoadmapError('');
+      setRoadmapLoading(false);
+      return undefined;
     }
-  }
+
+    let cancelled = false;
+    setRoadmap(null);
+    setRoadmapError('');
+    setRoadmapLoading(true);
+
+    getRoadmap(continueGoalId)
+      .then((result) => {
+        if (!cancelled) setRoadmap(result);
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setRoadmapError(getErrorMessage(error, 'Could not load the current roadmap.'));
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setRoadmapLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [continueGoalId]);
+
+  const orderedPhases = [...(roadmap?.phases || [])].sort(
+    (first, second) => first.phase_order - second.phase_order
+  );
+  const nextStep = orderedPhases
+    .flatMap((phase) =>
+      (phase.subtasks || []).map((subtask) => ({ phase, subtask }))
+    )
+    .find(({ subtask }) => !subtask.completed);
+
+  const goalAnalytics = data.goalAnalytics || [];
+  const totalStudySeconds = goalAnalytics.reduce(
+    (total, goal) => total + (Number(goal.total_study_seconds) || 0),
+    0
+  );
+  const completedSessions = goalAnalytics.reduce(
+    (total, goal) => total + (Number(goal.total_sessions) || 0),
+    0
+  );
+  const averageGoalProgress = goals.length
+    ? Math.round(
+        goals.reduce((total, goal) => total + (Number(goal.progress) || 0), 0) /
+          goals.length
+      )
+    : null;
+  const goalAnalyticsById = new Map(goalAnalytics.map((goal) => [goal.goal_id, goal]));
+  const activityDays = data.calendar ? buildActivityDays(data.calendar) : [];
+  const todayKey = getTodayInIndia();
+
+  const continueHref = activeSession
+    ? '/dashboard#learning-sessions'
+    : continueGoal
+    ? `/goals/${continueGoal.id}`
+    : '/goals/new';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-paper-100 via-paper-50 to-paper-100">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-        {/* Page header */}
-        <div className="mb-12">
-          <p className="text-xs font-mono uppercase tracking-widest text-accent-600 font-semibold mb-2">Learning Dashboard</p>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+    <div className="dashboard-page">
+      <div className="dashboard-container">
+        <section className="dashboard-intro" aria-labelledby="dashboard-title">
+          <div>
+            <p className="dashboard-eyebrow">LEARNING DASHBOARD</p>
+            <h1 className="dashboard-title" id="dashboard-title">
+              {getGreeting()}, {user?.username}
+            </h1>
+            <p className="dashboard-subtitle">
+              Your learning progress, goals, and recent work.
+            </p>
+          </div>
+          <Link className="dashboard-primary-action" to="/dashboard#my-goals">
+            <ArrowRight size={16} aria-hidden="true" />
+            View goals
+          </Link>
+        </section>
+
+        <section className="dashboard-section" aria-labelledby="overview-title">
+          <div className="dashboard-section-heading">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-ink-900 leading-tight">
-                {getGreeting()}, <span className="text-accent-600">{user?.username}</span>
-              </h1>
-              <p className="mt-3 text-base text-ink-600">Keep building momentum on your learning journey.</p>
+              <p className="dashboard-eyebrow">OVERVIEW</p>
+              <h2 id="overview-title">Learning overview</h2>
             </div>
-            <Link
-              to="/goals/new"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105 shrink-0"
-            >
-              <Plus className="h-5 w-5" />
-              New Goal
-            </Link>
           </div>
-        </div>
-
-      {error && <div className="mb-8"><ErrorMessage message={error} /></div>}
-
-      {!loading && <SessionTracker goals={goals} />}
-
-      {loading ? (
-        <div className="flex items-center justify-center py-24">
-          <div className="flex flex-col items-center gap-4">
-            <div className="relative w-12 h-12">
-              <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-accent-600 rounded-full animate-spin" style={{clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'}}></div>
+          <dl className="dashboard-metrics">
+            <div className="dashboard-metric">
+              <dt>Total learning time</dt>
+              <dd>{data.goalAnalytics ? formatDuration(totalStudySeconds) : '—'}</dd>
+              <span>
+                {data.daily
+                  ? `${formatDuration(data.daily.total_study_seconds)} today`
+                  : errors.daily || 'Recorded session time'}
+              </span>
             </div>
-            <p className="text-ink-500 font-medium">Loading your goals...</p>
-          </div>
-        </div>
-      ) : goals.length === 0 ? (
-        <div className="flex items-center justify-center py-20" id="my-goals">
-          <EmptyState
-            title="No goals yet"
-            message="Create your first learning goal and generate a personalized roadmap to get started."
-            action={
-              <Link
-                to="/goals/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent-600 hover:bg-accent-700 text-white font-semibold rounded-lg transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                Create your first goal
-              </Link>
-            }
-          />
-        </div>
-      ) : (
-        <div className="space-y-12">
-          {/* Progress chart */}
-          <GoalProgressChart goals={goals} />
+            <div className="dashboard-metric">
+              <dt>Current streak</dt>
+              <dd>{data.streaks ? `${data.streaks.current_streak} days` : '—'}</dd>
+              <span>
+                {data.streaks
+                  ? `${data.streaks.longest_streak} days longest`
+                  : errors.streaks || 'Consecutive learning days'}
+              </span>
+            </div>
+            <div className="dashboard-metric">
+              <dt>Completed sessions</dt>
+              <dd>{data.goalAnalytics ? completedSessions : '—'}</dd>
+              <span>
+                {data.goalAnalytics
+                  ? `All-time · ${
+                      data.daily ? `${data.daily.completed_sessions} today` : 'Across all goals'
+                    }`
+                  : errors.goalAnalytics || 'Across all learning goals'}
+              </span>
+            </div>
+            <div className="dashboard-metric">
+              <dt>Goal progress</dt>
+              <dd>{averageGoalProgress === null ? '—' : `${averageGoalProgress}%`}</dd>
+              <span>
+                {data.goals
+                  ? `${goals.length} ${goals.length === 1 ? 'goal' : 'goals'} tracked`
+                  : errors.goals || 'Average across your goals'}
+              </span>
+            </div>
+          </dl>
+        </section>
 
-          {/* Goals grid */}
-          <div id="my-goals">
-            <h2 className="text-2xl font-bold text-ink-900 mb-6">Your Goals</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {goals.map((goal) => (
-            <Link
-              key={goal.id}
-              to={`/goals/${goal.id}`}
-              className="group bg-white border border-paper-200 rounded-2xl p-6 sm:p-8 hover:shadow-xl transition-all duration-300 hover:border-accent-200 hover:scale-105 transform"
-            >
-              <div className="space-y-5">
-                {/* Header */}
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-ink-900 group-hover:text-accent-600 transition-colors line-clamp-2">
-                    {goal.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-ink-600 line-clamp-2">
-                    {goal.description || 'No description added yet'}
+        <section className="dashboard-section" aria-labelledby="continue-title">
+          <div className="dashboard-section-heading">
+            <div>
+              <p className="dashboard-eyebrow">NEXT STEP</p>
+              <h2 id="continue-title">Continue learning</h2>
+            </div>
+          </div>
+
+          {loading && !data.goals ? (
+            <p className="dashboard-status" role="status">Loading your learning path…</p>
+          ) : errors.goals && !data.goals ? (
+            <p className="dashboard-error" role="alert">{errors.goals}</p>
+          ) : continueGoal ? (
+            <div className="dashboard-continue-row">
+              <div className="dashboard-continue-copy">
+                <p className="dashboard-continue-status">
+                  {activeSession ? 'ACTIVE SESSION' : 'ACTIVE GOAL'}
+                </p>
+                <h3>{continueGoal.title}</h3>
+                {roadmapLoading ? (
+                  <p className="dashboard-status" role="status">Loading roadmap details…</p>
+                ) : roadmapError ? (
+                  <p className="dashboard-error" role="alert">{roadmapError}</p>
+                ) : nextStep ? (
+                  <p className="dashboard-next-step">
+                    <span>{nextStep.phase.phase_title}</span>
+                    <span>{nextStep.subtask.title}</span>
                   </p>
-                </div>
-
-                {/* Meta info */}
-                <div className="flex items-center gap-4 text-xs text-ink-500 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 text-accent-500" />
-                    <span>{formatDate(goal.target_date)}</span>
-                  </div>
-                </div>
-
-                {/* Progress */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-semibold text-ink-600">PROGRESS</span>
-                    <span className="text-sm font-bold text-accent-600">{goal.progress}%</span>
-                  </div>
-                  <ProgressBar value={goal.progress} />
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-2 border-t border-paper-100">
-                  <span className="text-xs text-ink-400">Click to view details</span>
-                  <ArrowRight className="h-4 w-4 text-accent-500 group-hover:translate-x-1 transition-transform" />
-                </div>
+                ) : roadmap?.phases?.length ? (
+                  <p className="dashboard-next-step">All roadmap subtasks are complete.</p>
+                ) : (
+                  <p className="dashboard-next-step">No roadmap has been generated yet.</p>
+                )}
               </div>
-            </Link>
-          ))}
+              <Link className="dashboard-text-link" to={continueHref}>
+                {activeSession ? 'Return to active session' : 'Continue goal'}
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
             </div>
+          ) : (
+            <div className="dashboard-continue-row">
+              <div className="dashboard-continue-copy">
+                <h3>{goals.length ? 'No active goal to continue' : 'No learning goals yet'}</h3>
+                <p className="dashboard-next-step">
+                  {goals.length
+                    ? 'Your goals are complete. Review their roadmaps or start another goal.'
+                    : 'Create a goal to start a learning path.'}
+                </p>
+              </div>
+              <Link
+                className="dashboard-text-link"
+                to={goals.length ? '/dashboard#my-goals' : '/goals/new'}
+              >
+                {goals.length ? 'View goals' : 'Create a goal'}
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          )}
+        </section>
+
+        {data.goals && <SessionTracker goals={goals} />}
+
+        <section className="dashboard-section" id="my-goals" aria-labelledby="goals-title">
+          <div className="dashboard-section-heading">
+            <div>
+              <p className="dashboard-eyebrow">ROADMAPS</p>
+              <h2 id="goals-title">Goal progress</h2>
+            </div>
+            <Link className="dashboard-text-link" to="/goals/new">
+              New goal
+              <Plus size={15} aria-hidden="true" />
+            </Link>
           </div>
-        </div>
-      )}
+
+          {loading && !data.goals ? (
+            <p className="dashboard-status" role="status">Loading goals…</p>
+          ) : errors.goals && !data.goals ? (
+            <p className="dashboard-error" role="alert">{errors.goals}</p>
+          ) : goals.length === 0 ? (
+            <p className="dashboard-empty">No goals yet. Create one to begin tracking your progress.</p>
+          ) : (
+            <div className="dashboard-goal-list">
+              {goals.map((goal) => {
+                const progress = Math.max(0, Math.min(100, Number(goal.progress) || 0));
+                const analytics = goalAnalyticsById.get(goal.id);
+
+                return (
+                  <article className="dashboard-goal-row" key={goal.id}>
+                    <div className="dashboard-goal-copy">
+                      <div className="dashboard-goal-meta">
+                        <span>{goal.status}</span>
+                        {goal.target_date && <span>Due {formatDate(goal.target_date)}</span>}
+                      </div>
+                      <h3>
+                        <Link to={`/goals/${goal.id}`}>{goal.title}</Link>
+                      </h3>
+                      {goal.description && <p>{goal.description}</p>}
+                    </div>
+                    <div className="dashboard-goal-progress">
+                      <div className="dashboard-progress-label">
+                        <span>Progress</span>
+                        <span>{progress}%</span>
+                      </div>
+                      <div
+                        className="dashboard-progress-track"
+                        role="progressbar"
+                        aria-label={`${goal.title} progress`}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={progress}
+                      >
+                        <span style={{ width: `${progress}%` }} />
+                      </div>
+                      <p>
+                        {analytics
+                          ? `${formatDuration(analytics.total_study_seconds)} studied · ${analytics.total_sessions} sessions`
+                          : errors.goalAnalytics || 'Study totals unavailable'}
+                      </p>
+                    </div>
+                    <Link
+                      className="dashboard-goal-open"
+                      to={`/goals/${goal.id}`}
+                      aria-label={`Open ${goal.title}`}
+                    >
+                      <ArrowRight size={17} aria-hidden="true" />
+                    </Link>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        <section className="dashboard-section dashboard-activity" aria-labelledby="activity-title">
+          <div className="dashboard-section-heading">
+            <div>
+              <p className="dashboard-eyebrow">DAILY RECORD</p>
+              <h2 id="activity-title">Learning activity</h2>
+            </div>
+            <span className="dashboard-activity-range">LAST 13 WEEKS</span>
+          </div>
+
+          {loading && !data.calendar ? (
+            <p className="dashboard-status" role="status">Loading activity…</p>
+          ) : errors.calendar && !data.calendar ? (
+            <p className="dashboard-error" role="alert">{errors.calendar}</p>
+          ) : !data.calendar?.length ? (
+            <p className="dashboard-empty">No learning activity has been recorded yet.</p>
+          ) : (
+            <>
+              <div
+                className="dashboard-activity-grid"
+                role="img"
+                aria-label="Daily learning activity during the last 13 weeks"
+              >
+                {activityDays.map(({ date, seconds }) => {
+                  const level = getActivityLevel(seconds);
+                  const hasActivity = seconds > 0;
+                  const label = hasActivity
+                    ? `${formatDate(date)}: ${formatDuration(seconds)} studied`
+                    : `${formatDate(date)}: no recorded study time`;
+
+                  return (
+                    <span
+                      className="dashboard-activity-cell"
+                      data-level={level}
+                      data-today={date === todayKey && hasActivity ? 'true' : undefined}
+                      key={date}
+                      title={label}
+                      aria-hidden="true"
+                    />
+                  );
+                })}
+              </div>
+              <div className="dashboard-activity-legend" aria-hidden="true">
+                <span>Less</span>
+                {[0, 1, 2, 3, 4].map((level) => (
+                  <span className="dashboard-activity-cell" data-level={level} key={level} />
+                ))}
+                <span>More</span>
+              </div>
+            </>
+          )}
+        </section>
       </div>
     </div>
   );
 }
-

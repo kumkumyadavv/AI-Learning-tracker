@@ -70,3 +70,19 @@ export function stopSession(sessionId, notes = '') {
 export function getSessions() {
   return request('/sessions/');
 }
+
+export function getDailyAnalytics() {
+  return request('/analytics/daily');
+}
+
+export function getStreakAnalytics() {
+  return request('/analytics/streaks');
+}
+
+export function getLearningCalendar() {
+  return request('/analytics/calendar');
+}
+
+export function getGoalAnalytics() {
+  return request('/analytics/goals');
+}
