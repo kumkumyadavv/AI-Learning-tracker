@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Plus, Trash2, ArrowRight, Loader2, Calendar } from 'lucide-react';
 import { getGoals, deleteGoal } from '../services';
 import { ApiError } from '../services/api';
@@ -26,6 +26,7 @@ function getGreeting() {
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const location = useLocation();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -37,6 +38,12 @@ export default function Dashboard() {
       .catch((err) => setError(err instanceof ApiError ? err.detail : 'Failed to load goals'))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (loading || !location.hash) return;
+    const targetId = decodeURIComponent(location.hash.slice(1));
+    document.getElementById(targetId)?.scrollIntoView({ block: 'start' });
+  }, [loading, location.hash]);
 
   async function handleDelete(goalId) {
     if (!window.confirm('Delete this goal? This action cannot be undone.')) return;
@@ -88,7 +95,7 @@ export default function Dashboard() {
           </div>
         </div>
       ) : goals.length === 0 ? (
-        <div className="flex items-center justify-center py-20">
+        <div className="flex items-center justify-center py-20" id="my-goals">
           <EmptyState
             title="No goals yet"
             message="Create your first learning goal and generate a personalized roadmap to get started."
@@ -109,7 +116,7 @@ export default function Dashboard() {
           <GoalProgressChart goals={goals} />
 
           {/* Goals grid */}
-          <div>
+          <div id="my-goals">
             <h2 className="text-2xl font-bold text-ink-900 mb-6">Your Goals</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {goals.map((goal) => (

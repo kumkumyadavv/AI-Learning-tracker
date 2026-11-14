@@ -157,7 +157,10 @@ export default function SessionTracker({ goals }) {
   const recentSessions = sessions.filter((session) => session.ended_at).slice(0, 5);
 
   return (
-    <section className="bg-white border border-paper-200 rounded-2xl p-6 mb-8 shadow-sm">
+    <section
+      className="bg-white border border-paper-200 rounded-2xl p-6 mb-8 shadow-sm"
+      id="learning-sessions"
+    >
       <div className="flex items-center gap-2 mb-5">
         <Clock className="h-5 w-5 text-accent-600" />
         <h2 className="text-xl font-bold text-ink-900">Learning Session</h2>
