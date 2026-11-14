@@ -189,3 +189,54 @@ def learning_calendar(
         }
         for day, seconds in sorted(daily_activity.items())
     ]
+
+
+
+@router.get("/goals")
+def goal_analytics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    goals = db.query(Goal).filter(
+        Goal.owner_id == current_user.id
+    ).all()
+
+    result = []
+
+    for goal in goals:
+        sessions = db.query(
+            func.sum(LearningSession.duration_seconds),
+            func.count(LearningSession.id)
+        ).filter(
+            LearningSession.goal_id == goal.id,
+            LearningSession.user_id == current_user.id,
+            LearningSession.ended_at.isnot(None)
+        ).first()
+
+        completed = db.query(func.count(Subtask.id)).join(
+            Roadmap, Subtask.roadmap_id == Roadmap.id
+        ).filter(
+            Roadmap.goal_id == goal.id,
+            Subtask.completed.is_(True)
+        ).scalar()
+
+        pending = db.query(func.count(Subtask.id)).join(
+            Roadmap, Subtask.roadmap_id == Roadmap.id
+        ).filter(
+            Roadmap.goal_id == goal.id,
+            Subtask.completed.is_(False)
+        ).scalar()
+
+        total_seconds = sessions[0] or 0
+
+        result.append({
+            "goal_id": goal.id,
+            "goal_title": goal.title,
+            "total_study_seconds": total_seconds,
+            "total_study_hours": round(total_seconds / 3600, 2),
+            "total_sessions": sessions[1] or 0,
+            "completed_subtasks": completed or 0,
+            "pending_subtasks": pending or 0
+        })
+
+    return result
