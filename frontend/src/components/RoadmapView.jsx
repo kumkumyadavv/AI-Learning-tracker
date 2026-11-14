@@ -1,81 +1,85 @@
 import { useState } from 'react';
-import {
-  Check,
-  Circle,
-  ExternalLink,
-  Video,
-  BookOpen,
-  PenTool,
-  FileText,
-  Link as LinkIcon,
-  ChevronDown,
-} from 'lucide-react';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 
-function ResourceIcon({ type }) {
-  const t = type.toLowerCase();
-  if (t.includes('video')) return <Video className="h-3 w-3" />;
-  if (t.includes('read') || t.includes('article') || t.includes('blog')) return <BookOpen className="h-3 w-3" />;
-  if (t.includes('practice') || t.includes('exercise') || t.includes('code')) return <PenTool className="h-3 w-3" />;
-  if (t.includes('doc')) return <FileText className="h-3 w-3" />;
-  return <LinkIcon className="h-3 w-3" />;
+function getSafeResourceUrl(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+function ResourceItem({ resource }) {
+  const href = getSafeResourceUrl(resource.url);
+  const type = typeof resource.resource_type === 'string' ? resource.resource_type : '';
+
+  return (
+    <li className="roadmap-resource">
+      {href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer">
+          <span className="roadmap-resource-copy">
+            <span className="roadmap-resource-title">{resource.title}</span>
+            {type && <span className="roadmap-resource-type">{type}</span>}
+          </span>
+          <ExternalLink size={14} aria-hidden="true" />
+        </a>
+      ) : (
+        <div className="roadmap-resource-copy">
+          <span className="roadmap-resource-title">{resource.title}</span>
+          {type && <span className="roadmap-resource-type">{type}</span>}
+          {resource.url && <span className="roadmap-resource-url">{resource.url}</span>}
+        </div>
+      )}
+    </li>
+  );
 }
 
 function SubtaskItem({
   subtask,
   onToggle,
   updating,
+  disabled,
 }) {
+  const resources = Array.isArray(subtask.resources) ? subtask.resources : [];
+
   return (
-    <div className="group/sub flex items-start gap-4 p-4 bg-white rounded-xl border border-paper-100 hover:border-paper-200 transition-all hover:shadow-sm">
-      {/* Checkbox */}
-      <button
-        type="button"
-        onClick={() => onToggle(subtask)}
-        disabled={updating}
-        className="flex-shrink-0 mt-1 disabled:opacity-40 transition-all"
-        aria-label={subtask.completed ? 'Mark as incomplete' : 'Mark as complete'}
-      >
-        {subtask.completed ? (
-          <div className="h-5 w-5 rounded-full bg-success-500 flex items-center justify-center flex-shrink-0">
-            <Check className="h-3 w-3 text-white" strokeWidth={3} />
-          </div>
-        ) : (
-          <Circle className="h-5 w-5 text-ink-300 group-hover/sub:text-accent-500 transition-colors" />
+    <li className="roadmap-subtask">
+      <label className="roadmap-subtask-check">
+        <input
+          type="checkbox"
+          checked={Boolean(subtask.completed)}
+          onChange={() => onToggle(subtask)}
+          disabled={disabled}
+          aria-label={`${subtask.completed ? 'Mark incomplete' : 'Mark complete'}: ${subtask.title}`}
+        />
+        <span aria-hidden="true" />
+      </label>
+      <div className="roadmap-subtask-content">
+        <div className="roadmap-subtask-heading">
+          <h4 data-completed={Boolean(subtask.completed)}>{subtask.title}</h4>
+          {updating && <span className="roadmap-subtask-saving" role="status">Saving…</span>}
+        </div>
+        {subtask.description && (
+          <p className="roadmap-subtask-description">{subtask.description}</p>
         )}
-      </button>
-
-      <div className="flex-1 min-w-0">
-        <span
-          className={`text-sm font-medium leading-relaxed block ${
-            subtask.completed ? 'text-ink-400 line-through decoration-ink-300' : 'text-ink-800'
-          }`}
-        >
-          {subtask.title}
-        </span>
-
-        {/* Resources — inline */}
-        {subtask.resources.length > 0 && (
-          <div className="mt-3 space-y-2">
-            {subtask.resources.map((r) => (
-              <a
-                key={r.id}
-                href={r.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 p-2 bg-paper-50 rounded-lg hover:bg-paper-100 transition-colors group/res text-xs"
-              >
-                <span className="inline-flex items-center gap-1.5 text-ink-500 font-medium flex-shrink-0">
-                  <ResourceIcon type={r.resource_type} />
-                  <span className="capitalize hidden sm:inline">{r.resource_type}</span>
-                </span>
-                <span className="text-ink-600 truncate flex-1 group-hover/res:text-accent-600 transition-colors">{r.title}</span>
-                <ExternalLink className="h-3.5 w-3.5 text-ink-400 flex-shrink-0" />
-              </a>
+        {subtask.estimated_duration && (
+          <p className="roadmap-subtask-duration">{subtask.estimated_duration}</p>
+        )}
+        {resources.length > 0 && (
+          <ul className="roadmap-resources" aria-label={`Resources for ${subtask.title}`}>
+            {resources.map((resource, index) => (
+              <ResourceItem
+                key={resource.id ?? `${resource.url}-${index}`}
+                resource={resource}
+              />
             ))}
-          </div>
+          </ul>
         )}
       </div>
-    </div>
+    </li>
   );
 }
 
@@ -84,12 +88,15 @@ export default function RoadmapView({
   onToggleSubtask,
   updatingSubtaskId,
 }) {
-  const sorted = [...roadmap.phases].sort((a, b) => a.phase_order - b.phase_order);
-  const [expanded, setExpanded] = useState(new Set(sorted.map((p) => p.id)));
+  const [collapsedPhases, setCollapsedPhases] = useState(() => new Set());
+  const phases = [...(roadmap.phases || [])].sort(
+    (first, second) => first.phase_order - second.phase_order
+  );
+  const busy = updatingSubtaskId !== null;
 
-  function toggle(id) {
-    setExpanded((prev) => {
-      const next = new Set(prev);
+  function togglePhase(id) {
+    setCollapsedPhases((current) => {
+      const next = new Set(current);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
@@ -97,82 +104,83 @@ export default function RoadmapView({
   }
 
   return (
-    <div className="space-y-5">
-      {sorted.map((phase, index) => {
-        const isOpen = expanded.has(phase.id);
-        const completed = phase.subtasks.filter((s) => s.completed).length;
-        const total = phase.subtasks.length;
-        const allDone = completed === total && total > 0;
-        const inProgress = completed > 0 && !allDone;
+    <div className="roadmap-phases">
+      {phases.map((phase) => {
+        const subtasks = Array.isArray(phase.subtasks) ? phase.subtasks : [];
+        const completed = subtasks.filter((subtask) => subtask.completed).length;
+        const total = subtasks.length;
+        const progress = total ? Math.round((completed / total) * 100) : 0;
+        const isComplete = total > 0 && completed === total;
+        const status = total === 0
+          ? 'No subtasks'
+          : isComplete
+          ? 'Complete'
+          : completed > 0
+          ? 'In progress'
+          : 'Not started';
+        const isOpen = !collapsedPhases.has(phase.id);
+        const phaseOrder = Number.isFinite(Number(phase.phase_order))
+          ? String(phase.phase_order).padStart(2, '0')
+          : '';
 
         return (
-          <div
-            key={phase.id}
-            className="bg-white border border-paper-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
-          >
-            {/* Phase header card */}
+          <section className="roadmap-phase" key={phase.id}>
             <button
+              className="roadmap-phase-toggle"
               type="button"
-              onClick={() => toggle(phase.id)}
-              className="w-full text-left p-6 sm:p-8 hover:bg-paper-50 transition-colors"
+              onClick={() => togglePhase(phase.id)}
+              aria-expanded={isOpen}
+              aria-label={`Toggle ${phase.phase_title}, ${status}, ${completed} of ${total} subtasks complete`}
             >
-              <div className="flex items-start gap-4">
-                {/* Phase badge */}
-                <div
-                  className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center font-bold text-white text-lg ${
-                    allDone
-                      ? 'bg-success-500'
-                      : inProgress
-                      ? 'bg-accent-500'
-                      : 'bg-ink-400'
-                  }`}
+              <span className="roadmap-phase-order">
+                {phaseOrder ? `PHASE ${phaseOrder}` : 'PHASE'}
+              </span>
+              <span className="roadmap-phase-main">
+                <span className="roadmap-phase-title">{phase.phase_title}</span>
+                {phase.description && (
+                  <span className="roadmap-phase-description">{phase.description}</span>
+                )}
+              </span>
+              <span className="roadmap-phase-summary">
+                <span className="roadmap-phase-status" data-complete={isComplete}>
+                  {status}
+                </span>
+                <span className="roadmap-phase-count">{completed}/{total}</span>
+                <span
+                  className="roadmap-phase-progress"
+                  aria-hidden="true"
                 >
-                  {allDone ? <Check className="h-6 w-6" strokeWidth={3} /> : index + 1}
-                </div>
-
-                {/* Phase info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-bold text-ink-900 leading-tight">
-                    {phase.phase_title}
-                  </h3>
-                  <div className="mt-2 flex items-center gap-3 text-sm">
-                    <div className="w-24 bg-paper-200 rounded-full h-2 overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${
-                          allDone ? 'bg-success-500' : 'bg-accent-500'
-                        }`}
-                        style={{ width: `${total > 0 ? (completed / total) * 100 : 0}%` }}
-                      />
-                    </div>
-                    <span className="text-ink-600 font-medium whitespace-nowrap">
-                      {completed}/{total}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Chevron */}
-                <ChevronDown
-                  className={`h-5 w-5 text-ink-400 flex-shrink-0 transition-transform duration-300 ${
-                    isOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </div>
+                  <span style={{ width: `${progress}%` }} />
+                </span>
+              </span>
+              <ChevronDown
+                className="roadmap-phase-chevron"
+                size={17}
+                aria-hidden="true"
+                data-open={isOpen}
+              />
             </button>
 
-            {/* Subtasks expanded content */}
             {isOpen && (
-              <div className="border-t border-paper-100 px-6 sm:px-8 py-6 space-y-4 bg-paper-50/50">
-                {phase.subtasks.map((subtask) => (
-                  <SubtaskItem
-                    key={subtask.id}
-                    subtask={subtask}
-                    onToggle={onToggleSubtask}
-                    updating={updatingSubtaskId === subtask.id}
-                  />
-                ))}
+              <div className="roadmap-phase-content">
+                {subtasks.length > 0 ? (
+                  <ul className="roadmap-subtasks">
+                    {subtasks.map((subtask) => (
+                      <SubtaskItem
+                        key={subtask.id}
+                        subtask={subtask}
+                        onToggle={onToggleSubtask}
+                        updating={updatingSubtaskId === subtask.id}
+                        disabled={busy}
+                      />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="roadmap-empty-phase">No subtasks are available for this phase.</p>
+                )}
               </div>
             )}
-          </div>
+          </section>
         );
       })}
     </div>
