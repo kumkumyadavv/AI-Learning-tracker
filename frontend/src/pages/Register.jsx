@@ -67,6 +67,13 @@ export default function Register() {
       {/* Right — form */}
       <div className="flex-1 flex items-center justify-center px-5 sm:px-8 py-12">
         <div className="w-full max-w-sm">
+          <Link
+            to="/"
+            className="inline-flex text-sm font-medium text-ink-500 hover:text-ink-900 mb-8 transition-colors"
+          >
+            Back to home
+          </Link>
+
           {/* Mobile brand */}
           <div className="lg:hidden flex items-center gap-2 mb-10">
             <Compass className="h-4 w-4 text-accent-600" />
