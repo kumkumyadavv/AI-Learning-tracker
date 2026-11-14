@@ -5,10 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, get_db
 from .routers import goals,users,auth,ai
 from app.routers import sessions
+from .routers import goals, users, auth, ai, analytics
 app = FastAPI()
 
 app.include_router(sessions.router)
-
+app.include_router(analytics.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -26,3 +27,6 @@ app.include_router(ai.router)
 @app.get("/")
 def root():
     return {"message": "Welcome to AI Learning Tracker Backend"}
+
+
+
