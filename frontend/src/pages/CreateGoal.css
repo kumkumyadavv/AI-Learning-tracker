@@ -4,11 +4,11 @@
   --create-muted: var(--app-muted, #98A0B3);
   --create-border: var(--app-border, #232838);
   --create-accent: var(--app-accent, #2F5BFF);
-  --create-offwhite: #F1EEE4;
+  --create-surface: var(--app-surface, #11141D);
   min-height: calc(100vh - 64px);
   background-color: var(--create-bg);
   color: var(--create-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .create-goal-container {
@@ -65,8 +65,9 @@
 .create-goal-heading h1 {
   margin: 0;
   color: var(--create-text);
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: clamp(30px, 3.5vw, 42px);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.12;
 }
@@ -106,23 +107,26 @@
 }
 
 .create-goal-form {
-  border-top: 1px solid var(--create-border);
+  display: grid;
+  gap: 16px;
 }
 
 .create-goal-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .create-goal-section {
   min-width: 0;
-  padding: 24px 28px 30px 0;
+  padding: 24px;
+  border: 1px solid var(--create-border);
+  border-radius: 10px;
+  background-color: var(--create-surface);
 }
 
 .create-goal-section + .create-goal-section {
-  padding-right: 0;
-  padding-left: 28px;
-  border-left: 1px solid var(--create-border);
+  padding: 24px;
 }
 
 .create-goal-section-label {
@@ -133,8 +137,9 @@
 .create-goal-section h2 {
   margin: 0;
   color: var(--create-text);
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: 19px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -170,14 +175,23 @@
 .create-goal-field textarea,
 .create-goal-field select {
   width: 100%;
-  min-height: 42px;
-  padding: 10px 11px;
+  min-height: 44px;
+  padding: 10px 12px;
   border: 1px solid var(--create-border);
-  border-radius: 2px;
-  background-color: transparent;
+  border-radius: 6px;
+  background-color: var(--create-bg);
   color: var(--create-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 14px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.create-goal-field input:not([type='range']):focus,
+.create-goal-field textarea:focus,
+.create-goal-field select:focus {
+  border-color: var(--create-accent);
+  box-shadow: 0 0 0 3px rgb(47 91 255 / 16%);
+  outline: none;
 }
 
 .create-goal-field textarea {
@@ -301,22 +315,25 @@
   gap: 9px;
   padding: 0 16px;
   border: 1px solid var(--create-border);
-  border-radius: 2px;
+  border-radius: 6px;
   cursor: pointer;
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
 }
 
 .create-goal-primary {
-  border-color: var(--create-offwhite);
-  background-color: var(--create-offwhite);
-  color: #08090D;
+  border-color: var(--create-accent);
+  background-color: var(--create-accent);
+  color: #FFFFFF;
+  transition: background-color 140ms ease, transform 140ms ease;
 }
 
 .create-goal-primary:hover:not(:disabled) {
-  background-color: #e5e1d7;
+  border-color: #4B71FF;
+  background-color: #4B71FF;
+  transform: translateY(-1px);
 }
 
 .create-goal-secondary {
@@ -325,7 +342,8 @@
 }
 
 .create-goal-secondary:hover:not(:disabled) {
-  border-color: var(--create-text);
+  border-color: var(--create-muted);
+  background-color: var(--create-surface);
 }
 
 .create-goal-primary:disabled,
@@ -351,12 +369,7 @@
 
   .create-goal-section,
   .create-goal-section + .create-goal-section {
-    padding: 22px 0 26px;
-    border-left: 0;
-  }
-
-  .create-goal-section + .create-goal-section {
-    border-top: 1px solid var(--create-border);
+    padding: 22px;
   }
 }
 
@@ -373,6 +386,15 @@
   .create-goal-primary,
   .create-goal-secondary {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .create-goal-field input:not([type='range']),
+  .create-goal-field textarea,
+  .create-goal-field select,
+  .create-goal-primary {
+    transition: none;
   }
 }
 

@@ -37,7 +37,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex bg-paper-50">
+    <div className="auth-page min-h-screen flex bg-paper-50">
       <div className="fixed right-4 top-4 z-40">
         <ThemeToggle />
       </div>

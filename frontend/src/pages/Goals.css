@@ -4,11 +4,11 @@
   --goals-muted: var(--app-muted, #98A0B3);
   --goals-border: var(--app-border, #232838);
   --goals-accent: var(--app-accent, #2F5BFF);
-  --goals-offwhite: #F1EEE4;
+  --goals-surface: var(--app-surface, #11141D);
   min-height: calc(100vh - 64px);
   background-color: var(--goals-bg);
   color: var(--goals-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
 .goals-container {
@@ -46,8 +46,9 @@
 .goals-heading h1 {
   margin: 0;
   color: var(--goals-text);
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: clamp(30px, 3vw, 38px);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.15;
 }
@@ -67,17 +68,19 @@
   justify-content: center;
   gap: 9px;
   padding: 0 16px;
-  border: 1px solid var(--goals-offwhite);
-  border-radius: 2px;
-  background-color: var(--goals-offwhite);
-  color: #08090D;
+  border: 1px solid var(--goals-accent);
+  border-radius: 6px;
+  background-color: var(--goals-accent);
+  color: #FFFFFF;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
+  transition: background-color 140ms ease, transform 140ms ease;
 }
 
 .goals-create-button:hover {
-  background-color: #e5e1d7;
+  background-color: #4B71FF;
+  transform: translateY(-1px);
 }
 
 .goals-create-button:focus-visible,
@@ -126,16 +129,18 @@
 }
 
 .goals-empty {
-  padding: 36px 0;
-  border-top: 1px solid var(--goals-border);
-  border-bottom: 1px solid var(--goals-border);
+  padding: 30px;
+  border: 1px solid var(--goals-border);
+  border-radius: 10px;
+  background-color: var(--goals-surface);
 }
 
 .goals-empty h2 {
   margin: 0;
   color: var(--goals-text);
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -152,9 +157,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 12px 0;
-  border-top: 1px solid var(--goals-border);
-  border-bottom: 1px solid var(--goals-border);
+  padding: 12px 0 16px;
 }
 
 .goals-count {
@@ -174,7 +177,7 @@
   min-height: 30px;
   padding: 4px 10px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 5px;
   background: transparent;
   color: var(--goals-muted);
   cursor: pointer;
@@ -188,18 +191,17 @@
 }
 
 .goals-filter[data-active='true'] {
-  border-color: var(--goals-border);
-  color: var(--goals-text);
+  border-color: rgb(47 91 255 / 38%);
+  background: rgb(47 91 255 / 12%);
+  color: #AFC0FF;
 }
 
 .goals-list {
+  display: grid;
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.goals-list-item {
-  border-bottom: 1px solid var(--goals-border);
 }
 
 .goals-item {
@@ -207,7 +209,16 @@
   grid-template-columns: minmax(0, 1.3fr) minmax(150px, 0.8fr) minmax(140px, 0.7fr) auto;
   align-items: center;
   gap: 24px;
-  padding: 20px 0;
+  padding: 20px;
+  border: 1px solid var(--goals-border);
+  border-radius: 10px;
+  background-color: var(--goals-surface);
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.goals-item:hover {
+  border-color: color-mix(in srgb, var(--goals-accent) 42%, var(--goals-border));
+  transform: translateY(-1px);
 }
 
 .goals-item-main {
@@ -216,8 +227,9 @@
 
 .goals-item-main h2 {
   margin: 0;
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.4;
 }
@@ -247,7 +259,10 @@
 }
 
 .goals-status {
-  color: var(--goals-text);
+  padding: 3px 7px;
+  border: 1px solid var(--goals-border);
+  border-radius: 4px;
+  color: var(--goals-muted);
   font-size: 10px;
 }
 
@@ -265,14 +280,16 @@
 }
 
 .goals-progress-track {
-  height: 3px;
+  height: 5px;
   overflow: hidden;
+  border-radius: 999px;
   background-color: var(--goals-border);
 }
 
 .goals-progress-track span {
   height: 100%;
   display: block;
+  border-radius: inherit;
   background-color: var(--goals-accent);
 }
 
@@ -292,8 +309,10 @@
 }
 
 .goals-filter-empty {
-  padding: 26px 0;
-  border-bottom: 1px solid var(--goals-border);
+  padding: 26px;
+  border: 1px solid var(--goals-border);
+  border-radius: 9px;
+  background-color: var(--goals-surface);
 }
 
 .goals-filter-empty p {
@@ -346,6 +365,14 @@
   .goals-item {
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
+    padding: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .goals-create-button,
+    .goals-item {
+      transition: none;
+    }
   }
 
   .goals-item-main {
