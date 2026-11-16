@@ -990,13 +990,13 @@
   font-size: clamp(30px, 3vw, 36px);
 }
 
-.auth-page label {
+.auth-page form label.text-xs {
   color: rgb(var(--text-primary));
   font-size: var(--type-label);
   font-weight: 500;
 }
 
-.auth-page input {
+.auth-page input.text-sm {
   font-family: var(--font-ui);
   font-size: var(--type-body);
 }
@@ -1033,6 +1033,16 @@
 .auth-page h1,
 .auth-page h2 {
   font-family: var(--font-heading);
+}
+
+.auth-page h1 {
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+.auth-page h2 {
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 .auth-page .font-semibold {
