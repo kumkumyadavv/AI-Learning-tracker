@@ -101,7 +101,7 @@
   background-color: var(--app-bg);
   color: var(--app-text);
   font: inherit;
-  font-size: var(--type-control);
+  font-size: var(--type-body);
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
