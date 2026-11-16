@@ -6,6 +6,23 @@
 
 :root {
   color-scheme: dark;
+  --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Space Grotesk', Inter, system-ui, sans-serif;
+  --font-metadata: 'JetBrains Mono', monospace;
+  --type-page-title: clamp(30px, 3vw, 36px);
+  --type-section-title: 22px;
+  --type-card-title: 18px;
+  --type-body: 15px;
+  --type-secondary: 14px;
+  --type-control: 14px;
+  --type-label: 14px;
+  --type-small: 13px;
+  --type-metadata: 12px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-body: 1.6;
   --background: 8 9 13;
   --surface: 17 20 29;
   --surface-raised: 23 27 39;
@@ -153,7 +170,7 @@
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-ui);
     background-color: rgb(var(--background));
     color: rgb(var(--text-primary));
     line-height: 1.5;
@@ -698,7 +715,7 @@
   min-height: 100vh;
   background-color: var(--app-bg);
   color: var(--app-text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 
 :root[data-theme='dark'] .app-shell {
@@ -752,9 +769,9 @@
 
 .app-shell-wordmark {
   color: var(--app-text);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  font-weight: 500;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
   letter-spacing: -0.02em;
   text-decoration: none;
   white-space: nowrap;
@@ -776,7 +793,7 @@
 }
 
 .app-sidebar-link {
-  min-height: 42px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -784,8 +801,8 @@
   border-radius: 6px;
   border-left: 2px solid transparent;
   color: var(--app-muted);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: var(--weight-medium);
   text-decoration: none;
   transition: background-color 140ms ease, color 140ms ease;
 }
@@ -821,44 +838,51 @@
 
 .app-sidebar-user-label {
   color: var(--app-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .app-sidebar-username {
   overflow: hidden;
   color: var(--app-text);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: var(--weight-semibold);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .app-sidebar-logout {
-  min-height: 36px;
+  min-height: 42px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0;
+  gap: 11px;
+  padding: 0 8px;
+  border-radius: 6px;
   border: 0;
   background: transparent;
   color: var(--app-muted);
   cursor: pointer;
   font: inherit;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: var(--weight-medium);
   text-align: left;
+  transition: background-color 140ms ease, color 140ms ease;
 }
 
 .app-sidebar-logout:hover {
+  background-color: var(--app-active);
   color: var(--app-text);
 }
 
 .app-sidebar-logout,
 .app-sidebar-link,
 .app-header-title {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-ui);
+}
+
+.app-sidebar-logout svg,
+.app-sidebar-link svg {
+  flex: 0 0 auto;
 }
 
 .app-sidebar-close {
@@ -889,8 +913,8 @@
   flex: 1;
   margin: 0;
   color: var(--app-text);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: var(--weight-semibold);
   letter-spacing: -0.01em;
 }
 
@@ -946,13 +970,49 @@
   min-height: 100vh;
   background-color: rgb(var(--background));
   color: rgb(var(--text-primary));
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-ui);
+}
+
+.auth-page .text-xs {
+  font-size: var(--type-metadata);
+  line-height: 1.5;
+}
+
+.auth-page .text-sm {
+  font-size: var(--type-secondary);
+}
+
+.auth-page .text-xl {
+  font-size: 28px;
+}
+
+.auth-page .text-3xl {
+  font-size: clamp(30px, 3vw, 36px);
+}
+
+.auth-page label {
+  color: rgb(var(--text-primary));
+  font-size: var(--type-label);
+  font-weight: 500;
+}
+
+.auth-page input {
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+}
+
+.auth-page input::placeholder {
+  color: rgb(var(--text-secondary));
+  opacity: 0.8;
 }
 
 .auth-page button[type='submit'] {
+  min-height: 46px;
   border-radius: 6px;
   background-color: #2F5BFF;
   color: #FFFFFF;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
 }
 
 .auth-page button[type='submit']:hover:not(:disabled) {
@@ -972,7 +1032,11 @@
 
 .auth-page h1,
 .auth-page h2 {
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-family: var(--font-heading);
+}
+
+.auth-page .font-semibold {
+  font-weight: 600;
 }
 
 @media (max-width: 1023px) {

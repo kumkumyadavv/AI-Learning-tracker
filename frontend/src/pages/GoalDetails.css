@@ -28,7 +28,7 @@
   align-items: center;
   gap: 8px;
   color: var(--goal-muted);
-  font-size: 12px;
+  font-size: var(--type-control);
   text-decoration: none;
 }
 
@@ -63,12 +63,10 @@
 .goal-modal-field label,
 .goal-modal-range-heading output {
   color: var(--goal-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
+font-family: var(--font-ui);
+font-size: var(--type-metadata);
+font-weight: var(--weight-medium);
   line-height: 1.5;
-  text-transform: uppercase;
 }
 
 .goal-details-state {
@@ -78,7 +76,7 @@
   padding: 28px 0;
   border-top: 1px solid var(--goal-border);
   color: var(--goal-muted);
-  font-size: 13px;
+  font-size: var(--type-secondary);
 }
 
 .goal-details-spinner {
@@ -98,7 +96,7 @@
   border-top: 1px solid var(--goal-border);
   border-bottom: 1px solid var(--goal-border);
   color: #f87171;
-  font-size: 13px;
+  font-size: var(--type-secondary);
   line-height: 1.5;
 }
 
@@ -124,8 +122,8 @@
 .goal-overview h1 {
   margin: 0;
   color: var(--goal-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: clamp(29px, 3.5vw, 42px);
+  font-family: var(--font-heading);
+  font-size: var(--type-page-title);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.12;
@@ -137,14 +135,15 @@
   border: 1px solid var(--goal-border);
   border-radius: 4px;
   color: var(--goal-muted);
+  text-transform: capitalize;
 }
 
 .goal-description {
   max-width: 720px;
   margin: 14px 0 0;
   color: var(--goal-muted);
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
   white-space: pre-line;
 }
 
@@ -160,7 +159,7 @@
   gap: 4px;
   margin: 0;
   color: var(--goal-text);
-  font-size: 12px;
+  font-size: var(--type-secondary);
 }
 
 .goal-overview-meta .goal-details-eyebrow {
@@ -177,7 +176,6 @@
   justify-content: space-between;
   margin-bottom: 8px;
   color: var(--goal-text);
-  letter-spacing: 0;
   text-transform: none;
 }
 
@@ -210,8 +208,8 @@
 .goal-roadmap-heading h2 {
   margin: 0;
   color: var(--goal-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 22px;
+  font-family: var(--font-heading);
+  font-size: var(--type-section-title);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -235,8 +233,8 @@
   background: transparent;
   color: var(--goal-text);
   cursor: pointer;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 12px;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
   font-weight: 500;
 }
 
@@ -296,16 +294,16 @@
 .goal-roadmap-empty h3 {
   margin: 0;
   color: var(--goal-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 16px;
+  font-family: var(--font-heading);
+  font-size: var(--type-card-title);
   font-weight: 600;
 }
 
 .goal-roadmap-empty p {
   margin: 7px 0 0;
   color: var(--goal-muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .roadmap-phases {
@@ -338,6 +336,10 @@
 .roadmap-phase-order {
   align-self: start;
   padding-top: 3px;
+  font-family: var(--font-metadata);
+  font-size: var(--type-metadata);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .roadmap-phase-main {
@@ -348,16 +350,16 @@
 
 .roadmap-phase-title {
   color: var(--goal-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 15px;
+  font-family: var(--font-heading);
+  font-size: var(--type-card-title);
   font-weight: 600;
   line-height: 1.4;
 }
 
 .roadmap-phase-description {
   color: var(--goal-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .roadmap-phase-summary {
@@ -374,6 +376,7 @@
 
 .roadmap-phase-count {
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .roadmap-phase-progress {
@@ -455,7 +458,7 @@
 .roadmap-subtask-heading h4 {
   margin: 0;
   color: var(--goal-text);
-  font-size: 13px;
+  font-size: var(--type-body);
   font-weight: 500;
   line-height: 1.5;
 }
@@ -468,20 +471,20 @@
 
 .roadmap-subtask-saving {
   flex: 0 0 auto;
-  font-size: 9px;
+  font-size: var(--type-metadata);
 }
 
 .roadmap-subtask-description,
 .roadmap-subtask-duration {
   margin: 5px 0 0;
   color: var(--goal-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .roadmap-subtask-duration {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-family: var(--font-metadata);
+  font-size: var(--type-metadata);
 }
 
 .roadmap-resources {
@@ -527,19 +530,19 @@
 
 .roadmap-resource-title {
   overflow-wrap: anywhere;
-  font-size: 12px;
+  font-size: var(--type-secondary);
 }
 
 .roadmap-resource-type {
-  font-size: 9px;
+  font-size: var(--type-metadata);
 }
 
 .roadmap-resource-url {
   flex-basis: 100%;
   overflow-wrap: anywhere;
   color: var(--goal-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
+  font-family: var(--font-metadata);
+  font-size: var(--type-metadata);
 }
 
 .roadmap-empty-phase {
@@ -547,7 +550,7 @@
   padding: 14px 0 4px;
   border-top: 1px solid var(--goal-border);
   color: var(--goal-muted);
-  font-size: 12px;
+  font-size: var(--type-secondary);
 }
 
 .roadmap-modal-backdrop {
@@ -582,8 +585,8 @@
 
 .roadmap-modal-header h2 {
   margin: 0;
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 20px;
+  font-family: var(--font-heading);
+  font-size: var(--type-section-title);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -614,13 +617,16 @@
   display: block;
   margin-bottom: 6px;
   color: var(--goal-text);
+  font-family: var(--font-ui);
+  font-size: var(--type-label);
+  font-weight: var(--weight-medium);
 }
 
 .goal-modal-field p {
   margin: 0 0 9px;
   color: var(--goal-muted);
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: var(--type-small);
+  line-height: var(--leading-body);
 }
 
 .goal-modal-field select {
@@ -631,8 +637,8 @@
   border-radius: 6px;
   background-color: var(--goal-bg);
   color: var(--goal-text);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
 }
 
 .goal-modal-field option {
@@ -649,6 +655,7 @@
 .goal-modal-range-heading output {
   flex: 0 0 auto;
   color: var(--goal-text);
+  font-size: var(--type-control);
 }
 
 .goal-modal-field input[type='range'] {
@@ -708,8 +715,8 @@
 .roadmap-modal-error {
   margin: 0;
   color: #f87171;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .roadmap-modal-actions {
@@ -728,7 +735,7 @@
   color: var(--goal-muted);
   cursor: pointer;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--type-control);
 }
 
 .goal-modal-cancel:disabled {

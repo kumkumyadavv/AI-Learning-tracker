@@ -24,7 +24,7 @@ export default function PhaseProgressChart({ roadmap }) {
   return (
     <div className="bg-white border border-paper-200 rounded-xl p-6 sm:p-8">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-ink-900">Phase Progress</h3>
+        <h3 className="text-lg font-bold font-serif text-ink-900">Phase Progress</h3>
         <p className="text-sm text-ink-600 mt-1">Completion percentage for each phase</p>
       </div>
 

@@ -16,7 +16,7 @@ export default function GoalProgressChart({ goals }) {
   return (
     <div className="bg-white border border-paper-200 rounded-xl p-6 sm:p-8">
       <div className="mb-6">
-        <h3 className="text-lg font-bold text-ink-900">Goal Progress Overview</h3>
+        <h3 className="text-lg font-bold font-serif text-ink-900">Goal Progress Overview</h3>
         <p className="text-sm text-ink-600 mt-1">Current progress for all your goals</p>
       </div>
       

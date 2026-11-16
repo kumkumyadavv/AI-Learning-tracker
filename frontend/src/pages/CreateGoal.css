@@ -22,7 +22,7 @@
   align-items: center;
   gap: 8px;
   color: var(--create-muted);
-  font-size: 12px;
+  font-size: var(--type-control);
   text-decoration: none;
 }
 
@@ -50,23 +50,24 @@
 .create-goal-field label,
 .create-goal-range-label output {
   color: var(--create-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.055em;
+  font-family: var(--font-ui);
+  font-size: var(--type-metadata);
+  font-weight: 500;
   line-height: 1.5;
-  text-transform: uppercase;
 }
 
 .create-goal-eyebrow {
   margin: 0 0 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .create-goal-heading h1 {
   margin: 0;
   color: var(--create-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: clamp(30px, 3.5vw, 42px);
+  font-family: var(--font-heading);
+  font-size: var(--type-page-title);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.12;
@@ -75,8 +76,8 @@
 .create-goal-heading > p:last-child {
   margin: 10px 0 0;
   color: var(--create-muted);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
 }
 
 .create-goal-error,
@@ -85,7 +86,7 @@
   padding: 13px 0;
   border-top: 1px solid var(--create-border);
   border-bottom: 1px solid var(--create-border);
-  font-size: 13px;
+  font-size: var(--type-secondary);
   line-height: 1.5;
 }
 
@@ -131,14 +132,16 @@
 
 .create-goal-section-label {
   margin: 0 0 7px;
-  font-size: 10px;
+  font-size: var(--type-metadata);
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 
 .create-goal-section h2 {
   margin: 0;
   color: var(--create-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 19px;
+  font-family: var(--font-heading);
+  font-size: var(--type-section-title);
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -146,8 +149,8 @@
 .create-goal-section-description {
   margin: 8px 0 0;
   color: var(--create-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .create-goal-field {
@@ -161,12 +164,13 @@
   gap: 12px;
   margin-bottom: 8px;
   color: var(--create-text);
-  font-size: 11px;
+  font-size: var(--type-label);
+  font-weight: 500;
 }
 
 .create-goal-field label span {
   color: var(--create-muted);
-  font-size: 10px;
+  font-size: var(--type-metadata);
   letter-spacing: 0;
   text-transform: none;
 }
@@ -181,8 +185,8 @@
   border-radius: 6px;
   background-color: var(--create-bg);
   color: var(--create-text);
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 14px;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
@@ -225,8 +229,8 @@
 .create-goal-field-error {
   margin: 7px 0 0;
   color: var(--create-muted);
-  font-size: 11px;
-  line-height: 1.5;
+  font-size: var(--type-small);
+  line-height: var(--leading-body);
 }
 
 .create-goal-field-error {
@@ -246,7 +250,7 @@
 
 .create-goal-range-label output {
   color: var(--create-text);
-  font-size: 11px;
+  font-size: var(--type-control);
   white-space: nowrap;
 }
 
@@ -317,8 +321,8 @@
   border: 1px solid var(--create-border);
   border-radius: 6px;
   cursor: pointer;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13px;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
   font-weight: 600;
   text-decoration: none;
 }

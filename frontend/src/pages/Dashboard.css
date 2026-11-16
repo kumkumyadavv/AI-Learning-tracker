@@ -40,23 +40,24 @@
 .dashboard-activity-range,
 .dashboard-activity-legend {
   color: var(--dashboard-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-family: var(--font-ui);
+  font-size: var(--type-metadata);
   font-weight: 400;
-  letter-spacing: 0.055em;
   line-height: 1.5;
-  text-transform: uppercase;
 }
 
 .dashboard-eyebrow {
   margin: 0 0 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .dashboard-title {
   margin: 0;
   color: var(--dashboard-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: clamp(28px, 3vw, 38px);
+  font-family: var(--font-heading);
+  font-size: var(--type-page-title);
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.15;
@@ -65,8 +66,8 @@
 .dashboard-subtitle {
   margin: 10px 0 0;
   color: var(--dashboard-muted);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
 }
 
 .dashboard-primary-action {
@@ -81,7 +82,7 @@
   border-radius: 6px;
   background-color: var(--dashboard-cobalt);
   color: #FFFFFF;
-  font-size: 13px;
+  font-size: var(--type-control);
   font-weight: 600;
   text-decoration: none;
   transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
@@ -120,8 +121,8 @@
 .dashboard-section-heading h2 {
   margin: 0;
   color: var(--dashboard-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 20px;
+  font-family: var(--font-heading);
+  font-size: var(--type-section-title);
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.3;
@@ -151,14 +152,16 @@
 
 .dashboard-metric dt {
   order: 1;
+  font-size: var(--type-small);
+  font-weight: var(--weight-medium);
 }
 
 .dashboard-metric dd {
   order: 0;
   margin: 0 0 5px;
   color: var(--dashboard-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: clamp(23px, 2vw, 29px);
+  font-family: var(--font-heading);
+  font-size: clamp(23px, 2vw, 28px);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.25;
@@ -171,9 +174,8 @@
 
 .dashboard-metric > span {
   margin-top: 7px;
-  font-size: 10px;
-  letter-spacing: 0;
-  text-transform: none;
+  font-size: var(--type-secondary);
+  line-height: 1.45;
 }
 
 .dashboard-continue-row {
@@ -194,8 +196,8 @@
 .dashboard-continue-copy h3 {
   margin: 0;
   color: var(--dashboard-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 18px;
+  font-family: var(--font-heading);
+  font-size: var(--type-card-title);
   font-weight: 600;
 }
 
@@ -209,8 +211,8 @@
 .dashboard-error {
   margin: 8px 0 0;
   color: var(--dashboard-muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .dashboard-next-step span + span::before {
@@ -228,7 +230,7 @@
   align-items: center;
   gap: 8px;
   color: #AFC0FF;
-  font-size: 13px;
+  font-size: var(--type-control);
   font-weight: 500;
   text-decoration: none;
 }
@@ -267,7 +269,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 10px;
+  font-size: var(--type-metadata);
 }
 
 .dashboard-goal-meta span:first-child {
@@ -276,11 +278,13 @@
   border-radius: 4px;
   background-color: rgb(47 91 255 / 10%);
   color: #AFC0FF;
+  font-weight: 500;
 }
 
 .dashboard-goal-copy h3 {
   margin: 5px 0 0;
-  font-size: 16px;
+  font-family: var(--font-heading);
+  font-size: var(--type-card-title);
   font-weight: 600;
   line-height: 1.4;
 }
@@ -298,8 +302,8 @@
 .dashboard-goal-progress > p {
   margin: 5px 0 0;
   color: var(--dashboard-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .dashboard-goal-progress {
@@ -310,9 +314,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 10px;
-  letter-spacing: 0;
-  text-transform: none;
+  font-size: var(--type-secondary);
 }
 
 .dashboard-progress-track {
@@ -330,8 +332,8 @@
 }
 
 .dashboard-goal-progress > p {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
+  font-family: var(--font-ui);
+  font-size: var(--type-metadata);
 }
 
 .dashboard-goal-open {
@@ -356,8 +358,8 @@
 .dashboard-page #learning-sessions h2,
 .dashboard-page #learning-sessions h3 {
   color: var(--dashboard-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-weight: 500;
+  font-family: var(--font-heading);
+  font-weight: 600;
 }
 
 .dashboard-page #learning-sessions h2 {
@@ -365,7 +367,7 @@
 }
 
 .dashboard-page #learning-sessions h3 {
-  font-size: 14px;
+  font-size: var(--type-card-title);
 }
 
 .dashboard-page #learning-sessions button {
@@ -375,7 +377,7 @@
 
 .dashboard-page #learning-sessions select,
 .dashboard-page #learning-sessions textarea {
-  border-radius: 2px;
+  border-radius: 6px;
   border-color: var(--dashboard-border);
   background-color: var(--dashboard-bg);
   color: var(--dashboard-text);
@@ -386,7 +388,10 @@
 }
 
 .dashboard-activity-range {
-  font-size: 10px;
+  font-size: var(--type-metadata);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .dashboard-activity-grid {
@@ -434,9 +439,8 @@
   align-items: center;
   gap: 5px;
   margin-top: 12px;
-  font-size: 9px;
+  font-size: var(--type-metadata);
   letter-spacing: 0;
-  text-transform: none;
 }
 
 .dashboard-activity-legend > span:first-child {

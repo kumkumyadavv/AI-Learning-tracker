@@ -31,23 +31,24 @@
 .goals-item-meta,
 .goals-progress-label {
   color: var(--goals-muted);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-family: var(--font-ui);
+  font-size: var(--type-metadata);
   font-weight: 400;
-  letter-spacing: 0.055em;
   line-height: 1.5;
-  text-transform: uppercase;
 }
 
 .goals-eyebrow {
   margin: 0 0 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .goals-heading h1 {
   margin: 0;
   color: var(--goals-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: clamp(30px, 3vw, 38px);
+  font-family: var(--font-heading);
+  font-size: var(--type-page-title);
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.15;
@@ -56,8 +57,8 @@
 .goals-description {
   margin: 10px 0 0;
   color: var(--goals-muted);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
 }
 
 .goals-create-button {
@@ -72,7 +73,7 @@
   border-radius: 6px;
   background-color: var(--goals-accent);
   color: #FFFFFF;
-  font-size: 13px;
+  font-size: var(--type-control);
   font-weight: 600;
   text-decoration: none;
   transition: background-color 140ms ease, transform 140ms ease;
@@ -109,7 +110,7 @@
   border-top: 1px solid var(--goals-border);
   border-bottom: 1px solid var(--goals-border);
   color: #f87171;
-  font-size: 13px;
+  font-size: var(--type-secondary);
 }
 
 .goals-error p {
@@ -138,8 +139,8 @@
 .goals-empty h2 {
   margin: 0;
   color: var(--goals-text);
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 20px;
+  font-family: var(--font-heading);
+  font-size: var(--type-section-title);
   font-weight: 600;
   letter-spacing: -0.02em;
 }
@@ -148,8 +149,8 @@
 .goals-filter-empty p {
   margin: 8px 0 18px;
   color: var(--goals-muted);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
 }
 
 .goals-toolbar {
@@ -163,7 +164,8 @@
 .goals-count {
   flex: 0 0 auto;
   margin: 0;
-  font-size: 10px;
+  font-size: var(--type-metadata);
+  font-weight: 500;
 }
 
 .goals-filters {
@@ -181,9 +183,9 @@
   background: transparent;
   color: var(--goals-muted);
   cursor: pointer;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  text-transform: uppercase;
+  font-family: var(--font-ui);
+  font-size: var(--type-control);
+  font-weight: 500;
 }
 
 .goals-filter:hover {
@@ -227,8 +229,8 @@
 
 .goals-item-main h2 {
   margin: 0;
-  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
-  font-size: 17px;
+  font-family: var(--font-heading);
+  font-size: var(--type-card-title);
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.4;
@@ -246,8 +248,8 @@
 .goals-item-main p {
   margin: 5px 0 0;
   color: var(--goals-muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--type-secondary);
+  line-height: var(--leading-body);
 }
 
 .goals-item-meta {
@@ -255,7 +257,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 7px 12px;
-  font-size: 10px;
+  font-size: var(--type-metadata);
 }
 
 .goals-status {
@@ -263,7 +265,8 @@
   border: 1px solid var(--goals-border);
   border-radius: 4px;
   color: var(--goals-muted);
-  font-size: 10px;
+  font-size: var(--type-metadata);
+  font-weight: 500;
 }
 
 .goals-item-progress {
@@ -274,9 +277,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 7px;
-  font-size: 10px;
-  letter-spacing: 0;
-  text-transform: none;
+  font-size: var(--type-secondary);
 }
 
 .goals-progress-track {
@@ -298,7 +299,7 @@
   align-items: center;
   gap: 7px;
   color: var(--goals-muted);
-  font-size: 12px;
+  font-size: var(--type-control);
   font-weight: 500;
   text-decoration: none;
   white-space: nowrap;

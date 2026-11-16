@@ -49,7 +49,7 @@ export default function Register() {
         </div>
 
         <div className="max-w-md">
-          <p className="text-xs font-mono uppercase tracking-wider-2 text-ink-300 mb-5">No. 02 — Start today</p>
+          <p className="text-xs uppercase tracking-wider-2 text-ink-300 mb-5">No. 02 — Start today</p>
           <h1 className="text-3xl font-serif leading-tight text-balance">
             Every expert was once a beginner who kept showing up.
           </h1>
@@ -59,7 +59,7 @@ export default function Register() {
           </p>
         </div>
 
-        <div className="text-xs text-ink-500 font-mono">
+        <div className="text-xs text-ink-500">
           Build skills, not just checklists.
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function Register() {
             <span className="text-sm font-semibold tracking-tight text-ink-900">Learning Tracker</span>
           </div>
 
-          <p className="text-xs font-mono uppercase tracking-wider-2 text-ink-400 mb-2">Create account</p>
+          <p className="text-xs uppercase tracking-wider-2 text-ink-400 mb-2">Create account</p>
           <h2 className="text-xl font-serif text-ink-900 mb-8">Begin your journey.</h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
