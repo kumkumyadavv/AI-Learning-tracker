@@ -1,8 +1,9 @@
 .dashboard-page #learning-sessions.sessions-page {
   margin: 34px 0 0;
-  padding: 24px 0 0;
-  border-top: 1px solid var(--app-border);
-  border-bottom: 0;
+  padding: 24px;
+  border: 1px solid var(--app-border);
+  border-radius: 10px;
+  background-color: var(--app-surface);
 }
 
 .sessions-page-heading {
@@ -24,7 +25,7 @@
   color: var(--app-text);
   font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: clamp(24px, 3vw, 32px);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.1;
 }
@@ -58,7 +59,7 @@
   color: var(--app-text);
   font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
   font-size: 17px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -93,18 +94,19 @@
   min-height: 42px;
   padding: 10px 12px;
   border: 1px solid var(--app-border);
-  border-radius: 2px;
+  border-radius: 6px;
   outline: none;
   background-color: var(--app-bg);
   color: var(--app-text);
   font: inherit;
   font-size: 13px;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
 .dashboard-page #learning-sessions .sessions-field:focus-visible {
   border-color: var(--app-accent);
-  outline: 2px solid color-mix(in srgb, var(--app-accent) 28%, transparent);
-  outline-offset: 1px;
+  box-shadow: 0 0 0 3px rgb(47 91 255 / 16%);
+  outline: none;
 }
 
 .sessions-field:disabled {
@@ -159,12 +161,12 @@
 }
 
 .sessions-start-button {
-  background-color: var(--sessions-action-bg, #2F5BFF);
-  color: var(--sessions-action-text, #fff);
+  background-color: var(--app-accent);
+  color: #FFFFFF;
 }
 
 .sessions-start-button:not(:disabled):hover {
-  background-color: #244bd8;
+  background-color: #4B71FF;
 }
 
 .sessions-stop-button {
@@ -200,7 +202,7 @@
 
 .sessions-timer {
   margin: 3px 0 0;
-  color: var(--app-text);
+  color: #AFC0FF;
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(32px, 5vw, 46px);
   font-variant-numeric: tabular-nums;
@@ -354,15 +356,6 @@
   to { transform: rotate(360deg); }
 }
 
-:root[data-theme='dark'] .sessions-page {
-  --sessions-action-bg: #F1EEE4;
-  --sessions-action-text: #08090D;
-}
-
-:root[data-theme='dark'] .sessions-start-button:not(:disabled):hover {
-  background-color: #ddd9ce;
-}
-
 @media (max-width: 760px) {
   .sessions-content {
     grid-template-columns: minmax(0, 1fr);
@@ -379,6 +372,10 @@
 }
 
 @media (max-width: 480px) {
+  .dashboard-page #learning-sessions.sessions-page {
+    padding: 16px;
+  }
+
   .sessions-page-heading {
     padding-bottom: 16px;
   }
@@ -412,5 +409,9 @@
 
   .sessions-spinner {
     animation: none;
+  }
+
+  .sessions-field {
+    transition: none;
   }
 }

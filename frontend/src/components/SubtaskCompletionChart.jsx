@@ -37,14 +37,14 @@ export default function SubtaskCompletionChart({ roadmap }) {
     },
   ];
 
-  const COLORS = ['#22C55E', '#E2E8F0'];
+  const COLORS = ['#2F5BFF', '#292F40'];
 
   const renderCustomLabel = (entry) => {
     return `${entry.percentage}%`;
   };
 
   return (
-    <div className="bg-white border border-paper-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div className="bg-white border border-paper-200 rounded-xl p-6 sm:p-8">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-ink-900">Subtask Completion</h3>
         <p className="text-sm text-ink-600 mt-1">{totalCompleted} of {total} subtasks completed</p>
@@ -61,7 +61,7 @@ export default function SubtaskCompletionChart({ roadmap }) {
               outerRadius={90}
               paddingAngle={2}
               dataKey="value"
-              label={renderCustomLabel}
+              label={{ fill: '#F2F4F8', fontFamily: 'Inter', fontSize: 12, formatter: renderCustomLabel }}
             >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -69,9 +69,10 @@ export default function SubtaskCompletionChart({ roadmap }) {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: '#FAFBFE',
-                border: '1px solid #EBF0F8',
+                backgroundColor: '#171B27',
+                border: '1px solid #292F40',
                 borderRadius: '8px',
+                color: '#F2F4F8',
                 padding: '8px 12px',
               }}
               formatter={(value, name, props) => [

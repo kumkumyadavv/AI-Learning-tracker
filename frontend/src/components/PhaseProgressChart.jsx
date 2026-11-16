@@ -19,10 +19,10 @@ export default function PhaseProgressChart({ roadmap }) {
     };
   });
 
-  const colors = ['#6D28D9', '#7C3AED', '#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE'];
+  const colors = ['#2F5BFF', '#5277FF', '#7894FF', '#9DB2FF'];
 
   return (
-    <div className="bg-white border border-paper-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+    <div className="bg-white border border-paper-200 rounded-xl p-6 sm:p-8">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-ink-900">Phase Progress</h3>
         <p className="text-sm text-ink-600 mt-1">Completion percentage for each phase</p>
@@ -34,19 +34,20 @@ export default function PhaseProgressChart({ roadmap }) {
           layout="vertical"
           margin={{ top: 5, right: 30, left: 250, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#EBF0F8" />
-          <XAxis type="number" domain={[0, 100]} stroke="#94A3B8" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#292F40" />
+          <XAxis type="number" domain={[0, 100]} stroke="#697287" tick={{ fill: '#98A0B3', fontFamily: 'Inter' }} />
           <YAxis
             dataKey="name"
             type="category"
             width={240}
-            tick={{ fontSize: 12, fill: '#334155' }}
+            tick={{ fontSize: 12, fill: '#98A0B3', fontFamily: 'Inter' }}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#FAFBFE',
-              border: '1px solid #EBF0F8',
+              backgroundColor: '#171B27',
+              border: '1px solid #292F40',
               borderRadius: '8px',
+              color: '#F2F4F8',
               padding: '8px 12px',
             }}
             formatter={(value, name, props) => {
@@ -65,7 +66,7 @@ export default function PhaseProgressChart({ roadmap }) {
               return label;
             }}
           />
-          <Bar dataKey="progress" fill="#6D28D9" radius={[0, 8, 8, 0]}>
+          <Bar dataKey="progress" fill="#2F5BFF" radius={[0, 4, 4, 0]}>
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
             ))}
