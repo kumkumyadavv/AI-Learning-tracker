@@ -1,242 +1,168 @@
- # 🎯 AI Learning Tracker
+# AI Learning Tracker
 
-**AI-powered personalized learning roadmap and progress tracking platform.**
+An AI-powered learning planner that helps users turn their learning goals into structured roadmaps, track study sessions, and monitor their learning progress.
 
-AI Learning Tracker helps users turn their learning goals into structured, personalized roadmaps using **Google Gemini AI**. Users can define their goals, learning preferences, and target dates, then follow AI-generated phases, subtasks, and learning resources while tracking their progress.
-
-## 🚀 Live Demo
-
-**Frontend:**
-https://ai-learning-tracker-ruby.vercel.app/
-
-**Backend API:**
-https://ai-learning-tracker-dyff.onrender.com
-
-**API Documentation:**
-https://ai-learning-tracker-dyff.onrender.com/docs
+**Live Demo:** https://ai-learning-tracker-ruby.vercel.app/  
+**Backend API:** https://ai-learning-tracker-dyff.onrender.com/  
+**API Documentation:** https://ai-learning-tracker-dyff.onrender.com/docs
 
 ---
 
-## ✨ Features
+## Overview
 
-### 🔐 Authentication
+Learning something new requires more than just setting a goal. It requires a clear roadmap, consistent execution, and a way to measure progress.
 
-* User registration and login
-* Secure password hashing
-* JWT-based authentication
-* Protected API routes
-* Current-user authentication
-* User-specific data access
+AI Learning Tracker addresses this by generating personalized learning roadmaps based on a user's goals, current skill level, available study time, learning preferences, and target completion date.
 
-### 🎯 Learning Goals
+Users can organize their learning into phases and subtasks, track completed activities, record learning sessions, and monitor their overall progress.
 
-* Create personalized learning goals
-* Define skill level and learning preferences
-* Set daily learning hours
-* Set target completion date
-* View personal goals
-* View individual goal details
-* Delete goals
+## Features
 
-### 🤖 AI-Powered Roadmap Generation
+### 1. Authentication & User Management
+- User registration and login.
+- Password hashing for secure credential storage.
+- JWT-based authentication.
+- Protected routes and user-specific data.
 
-Users provide:
+### 2. AI-Powered Roadmap Generation
+- Generate personalized learning roadmaps using Google's Gemini API.
+- Customize roadmaps based on:
+  - Learning goal and description.
+  - Current skill level.
+  - Daily available learning hours.
+  - Learning preferences.
+  - Target completion date.
 
-* Learning goal
-* Description
-* Skill level
-* Daily learning hours
-* Learning style
-* Target date
+### 3. Goal Management
+- Create and manage learning goals.
+- View individual goal details.
+- Track goal completion progress.
 
-Google Gemini generates a structured roadmap containing:
+### 4. Structured Learning Roadmaps
+- Organize roadmaps into multiple phases.
+- Break phases into manageable subtasks.
+- Associate learning resources with subtasks.
+- Track individual subtask completion.
 
-* Learning phases
-* Subtasks
-* Recommended resources
-* Resource types
-* Resource URLs
+### 5. Learning Session Tracking
+- Start and stop learning sessions.
+- Associate sessions with learning goals and subtasks.
+- Record study duration and session details.
+- View previous learning sessions.
 
-### 📚 Roadmap & Progress Tracking
-
-* View roadmap phase by phase
-* View subtasks for each phase
-* Mark subtasks as completed/uncompleted
-* Automatically calculate goal progress
-* Track phase-wise completion
-* Access recommended learning resources
-
-### 📊 Progress Visualization
-
-* Goal completion percentage
-* Completed vs remaining subtasks
-* Phase-wise progress
-* Visual progress indicators
+### 6. Progress Tracking
+- Monitor roadmap and goal completion.
+- Track completed and pending subtasks.
+- View learning activity and session statistics.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend
-
-* React
-* JavaScript
-* Vite
-* React Router
-* CSS
-
-### Backend
-
-* FastAPI
-* Python
-* SQLAlchemy
-* PostgreSQL
-* Pydantic
-* JWT Authentication
-* Passlib / bcrypt
-* Alembic
-
-### AI
-
-* Google Gemini API
-* Gemini 2.5 Flash
-
-### Deployment
-
-* Vercel — Frontend
-* Render — Backend
-* PostgreSQL — Database
+| Layer | Technologies |
+|---|---|
+| Frontend | React, JavaScript, Vite, React Router |
+| Styling | CSS |
+| Backend | Python, FastAPI |
+| Database | PostgreSQL |
+| ORM | SQLAlchemy |
+| Data Validation | Pydantic |
+| Authentication | JWT, OAuth2 |
+| Password Security | Passlib, bcrypt |
+| Database Migrations | Alembic |
+| AI Integration | Google Gemini API |
+| Deployment | Vercel, Render |
 
 ---
 
-## 🏗️ Architecture
+## System Architecture
+
+The application follows a frontend-backend architecture.
 
 ```text
-                    ┌────────────────────┐
-                    │      React UI      │
-                    │     Frontend       │
-                    └─────────┬──────────┘
-                              │
-                              │ REST API
-                              ▼
-                    ┌────────────────────┐
-                    │      FastAPI       │
-                    │      Backend       │
-                    └─────────┬──────────┘
-                              │
-                 ┌────────────┴────────────┐
-                 │                         │
-                 ▼                         ▼
-        ┌─────────────────┐       ┌─────────────────┐
-        │   PostgreSQL    │       │   Gemini API    │
-        │    Database     │       │  AI Generation  │
-        └─────────────────┘       └─────────────────┘
+             User
+              |
+              v
+       React Frontend
+       (Vite + React)
+              |
+         HTTP Requests
+              |
+              v
+        FastAPI Backend
+              |
+       +------+------+
+       |             |
+       v             v
+  PostgreSQL     Gemini API
+   Database      Roadmap
+                 Generation
 ```
+
+### Application Flow
+
+1. A user registers or logs into the application.
+2. The backend authenticates the user and issues a JWT.
+3. The frontend uses the token when accessing protected endpoints.
+4. The user creates a learning goal.
+5. The backend uses the Gemini API to generate a structured roadmap.
+6. The roadmap is stored and managed through the database.
+7. Users update subtask completion and record learning sessions.
+8. The application retrieves stored data to display learning progress.
 
 ---
 
-## 🔄 Application Flow
+## Database Design
 
-```text
-Register / Login
-       ↓
-Create Learning Goal
-       ↓
-Provide Learning Preferences
-       ↓
-Gemini Generates Personalized Roadmap
-       ↓
-Roadmap Stored in PostgreSQL
-       ↓
-Phases → Subtasks → Resources
-       ↓
-User Completes Subtasks
-       ↓
-Progress Automatically Recalculated
-```
+The application uses PostgreSQL with SQLAlchemy ORM.
+
+Core entities include:
+
+- **User:** Stores user account information.
+- **Goal:** Stores individual learning goals.
+- **Phase:** Represents stages within a learning roadmap.
+- **Subtask:** Represents actionable learning activities within phases.
+- **Resource:** Stores learning resources associated with subtasks.
+- **LearningSession:** Stores individual study sessions and their details.
+
+The database uses relationships and foreign keys to maintain associations between users, goals, roadmaps, and learning activities.
 
 ---
 
-## 📁 Project Structure
+## Getting Started
 
-```text
-AI-Learning-tracker/
-│
-├── backend/
-│   ├── app/
-│   │   ├── routers/
-│   │   │   ├── auth.py
-│   │   │   ├── users.py
-│   │   │   ├── goals.py
-│   │   │   └── ai.py
-│   │   │
-│   │   ├── schemas/
-│   │   │   ├── auth.py
-│   │   │   ├── users.py
-│   │   │   ├── goals.py
-│   │   │   └── ai.py
-│   │   │
-│   │   ├── services/
-│   │   │   └── ai_service.py
-│   │   │
-│   │   ├── models.py
-│   │   ├── database.py
-│   │   ├── security.py
-│   │   └── main.py
-│   │
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── context/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   │
-│   ├── public/
-│   ├── package.json
-│   └── .env
-│
-└── README.md
-```
+### Prerequisites
 
----
+- Python 3.10+
+- Node.js and npm
+- PostgreSQL
+- Google Gemini API key
 
-# 🚀 Getting Started
-
-## 1. Clone Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Kumkumy99/AI-Learning-tracker.git
-cd AI-Learning-tracker
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+cd ai-learning-tracker
 ```
 
----
-
-# ⚙️ Backend Setup
-
-Navigate to the backend:
+### 2. Backend Setup
 
 ```bash
 cd backend
+
+python -m venv .venv
 ```
 
-Create a virtual environment:
+Activate the virtual environment:
 
-### Windows
-
+**Windows**
 ```bash
-python -m venv venv
-venv\Scripts\activate
+.venv\Scripts\activate
 ```
 
-### macOS/Linux
-
+**macOS/Linux**
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 Install dependencies:
@@ -245,274 +171,78 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
----
+Configure the required environment variables in your backend `.env` file, using the variable names expected by your application.
 
-## 🔑 Backend Environment Variables
-
-Create a `.env` file inside `backend/`:
+Typical configuration includes:
 
 ```env
-DATABASE_URL=your_postgresql_database_url
+DATABASE_URL=your_postgresql_connection_string
 SECRET_KEY=your_secret_key
 GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Never commit `.env` to GitHub.
+Run database migrations:
 
-Make sure `.env` is included in `.gitignore`.
+```bash
+alembic upgrade head
+```
 
----
-
-## ▶️ Run Backend
-
-From the `backend` directory:
+Start the backend:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Backend:
+Backend documentation:
 
-```text
-http://127.0.0.1:8000
-```
+`http://localhost:8000/docs`
 
-Swagger documentation:
+### 3. Frontend Setup
 
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-# 💻 Frontend Setup
-
-Open a new terminal:
+Open another terminal:
 
 ```bash
 cd frontend
-```
-
-Install dependencies:
-
-```bash
 npm install
 ```
 
-Create `.env`:
+Create a `.env` file:
 
 ```env
-VITE_API_URL=http://127.0.0.1:8000
+VITE_API_URL=http://localhost:8000
 ```
 
-Run development server:
+Start the frontend:
 
 ```bash
 npm run dev
 ```
 
-Frontend:
-
-```text
-http://localhost:5173
-```
+Open the local URL provided by Vite.
 
 ---
 
-# 🔌 API Overview
+## Project Highlights
 
-### Authentication
-
-```text
-POST /auth/register
-POST /auth/login
-```
-
-### Users
-
-```text
-GET /users/me
-```
-
-### Goals
-
-```text
-POST /goals
-GET /goals
-GET /goals/{goal_id}
-DELETE /goals/{goal_id}
-```
-
-### AI Roadmap
-
-```text
-POST /ai/goals/{goal_id}/generate-roadmap
-GET /ai/goals/{goal_id}/roadmap
-PATCH /ai/subtasks/{subtask_id}
-```
-
-Protected endpoints require JWT authentication.
+- Integrated an external generative AI API into a full-stack application.
+- Implemented JWT-based authentication and protected API access.
+- Designed relational database models using SQLAlchemy.
+- Used Alembic for database schema migrations.
+- Built a structured goal-to-roadmap workflow.
+- Connected frontend components with REST APIs.
+- Implemented learning session tracking and progress calculation.
 
 ---
 
-# 🗄️ Data Model
+## Future Improvements
 
-```text
-User
- │
- └── Goals
-       │
-       └── Roadmap
-             │
-             └── Phases
-                   │
-                   └── Subtasks
-                         │
-                         └── Resources
-```
-
-A user can create multiple learning goals.
-
-Each goal can have a generated roadmap containing multiple phases. Each phase contains subtasks, and subtasks can contain recommended learning resources.
+- Adaptive roadmaps based on actual learning progress.
+- AI-powered learning recommendations.
+- Retrieval-Augmented Generation (RAG) for contextual learning assistance.
+- Enhanced learning analytics.
+- More detailed progress insights.
 
 ---
-
-# 🤖 AI Integration
-
-The application uses **Google Gemini** to generate personalized learning roadmaps.
-
-The AI receives information such as:
-
-```text
-Goal
-Description
-Target Date
-Skill Level
-Daily Learning Hours
-Learning Style
-```
-
-Gemini returns a structured roadmap:
-
-```json
-{
-  "phases": [
-    {
-      "phase_title": "Phase 1",
-      "subtasks": [
-        {
-          "title": "Learn the fundamentals",
-          "resources": [
-            {
-              "title": "Learning Resource",
-              "url": "https://example.com",
-              "resource_type": "article"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-The backend validates the generated roadmap and stores it in PostgreSQL.
-
----
-
-# 📈 Progress Tracking
-
-Progress is calculated from subtask completion:
-
-```text
-Completed Subtasks
-        ÷
-Total Subtasks
-        ×
-100
-```
-
-Whenever a user completes or uncompletes a subtask, the backend updates the goal's progress percentage.
-
-This keeps the displayed progress synchronized with the actual roadmap state.
-
----
-
-# 🔒 Security
-
-The application includes:
-
-* Password hashing
-* JWT authentication
-* Protected API routes
-* User-specific goal access
-* Authorization checks
-* Environment variables for secrets
-* Database-backed user isolation
-
-Sensitive credentials are never stored in the repository.
-
----
-
-# 🎨 Frontend
-
-The frontend provides:
-
-* Learning-focused dashboard
-* Goal management
-* AI roadmap visualization
-* Phase and subtask organization
-* Progress indicators
-* Interactive completion tracking
-* Learning resource links
-* Responsive UI
-
----
-
-# 🔮 Future Improvements
-
-Planned improvements include:
-
-* 📅 Daily learning activity tracking
-* 🔥 GitHub-style learning heatmap
-* 🔥 Learning streaks
-* 🤖 AI learning assistant / chatbot
-* 🧠 Personalized AI feedback
-* 📊 Detailed learning analytics
-* 🔔 Notifications and reminders
-* 📆 Calendar integration
-* 📈 Historical progress tracking
-
----
-
-# 📌 Project Status
-
-## MVP Completed & Deployed 🚀
-
-The MVP currently supports:
-
-* Authentication
-* Learning goal management
-* AI-powered roadmap generation
-* Personalized learning preferences
-* Roadmap persistence
-* Learning resources
-* Subtask completion tracking
-* Automatic progress calculation
-* PostgreSQL database
-* Production deployment
-
-### Deployment
-
-**Frontend:** Vercel
-**Backend:** Render
-**Database:** PostgreSQL
-
-The current MVP is intentionally focused on the core learning workflow. Additional analytics, heatmaps, streaks, and AI chatbot functionality are planned for future iterations.
-
----
-
-## ⭐ About
-
-AI-powered personal learning tracker built with **FastAPI, PostgreSQL, React, and Google Gemini**, designed to transform learning goals into personalized roadmaps and provide actionable progress tracking.
+ 
+[GitHub](https://github.com/kumkumyadavv)
 
